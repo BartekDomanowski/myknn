@@ -120,6 +120,36 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// points_within_radius_km_bruteforce
+IntegerVector points_within_radius_km_bruteforce(double query_lat, double query_lon, NumericVector lats, NumericVector lons, double radius_km);
+RcppExport SEXP _AirRoute_points_within_radius_km_bruteforce(SEXP query_latSEXP, SEXP query_lonSEXP, SEXP latsSEXP, SEXP lonsSEXP, SEXP radius_kmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type query_lat(query_latSEXP);
+    Rcpp::traits::input_parameter< double >::type query_lon(query_lonSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lats(latsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lons(lonsSEXP);
+    Rcpp::traits::input_parameter< double >::type radius_km(radius_kmSEXP);
+    rcpp_result_gen = Rcpp::wrap(points_within_radius_km_bruteforce(query_lat, query_lon, lats, lons, radius_km));
+    return rcpp_result_gen;
+END_RCPP
+}
+// points_within_radius_km_kdtree
+IntegerVector points_within_radius_km_kdtree(double query_lat, double query_lon, NumericVector lats, NumericVector lons, double radius_km);
+RcppExport SEXP _AirRoute_points_within_radius_km_kdtree(SEXP query_latSEXP, SEXP query_lonSEXP, SEXP latsSEXP, SEXP lonsSEXP, SEXP radius_kmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type query_lat(query_latSEXP);
+    Rcpp::traits::input_parameter< double >::type query_lon(query_lonSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lats(latsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type lons(lonsSEXP);
+    Rcpp::traits::input_parameter< double >::type radius_km(radius_kmSEXP);
+    rcpp_result_gen = Rcpp::wrap(points_within_radius_km_kdtree(query_lat, query_lon, lats, lons, radius_km));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_AirRoute_dist_haversine_km", (DL_FUNC) &_AirRoute_dist_haversine_km, 4},
@@ -130,6 +160,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_AirRoute_cross_track_segment_km", (DL_FUNC) &_AirRoute_cross_track_segment_km, 6},
     {"_AirRoute_cross_track_route_km", (DL_FUNC) &_AirRoute_cross_track_route_km, 4},
     {"_AirRoute_track_cross_track_km", (DL_FUNC) &_AirRoute_track_cross_track_km, 4},
+    {"_AirRoute_points_within_radius_km_bruteforce", (DL_FUNC) &_AirRoute_points_within_radius_km_bruteforce, 5},
+    {"_AirRoute_points_within_radius_km_kdtree", (DL_FUNC) &_AirRoute_points_within_radius_km_kdtree, 5},
     {NULL, NULL, 0}
 };
 

@@ -153,3 +153,37 @@ track_cross_track_km <- function(track_lats, track_lons, plan_lats, plan_lons) {
     .Call(`_AirRoute_track_cross_track_km`, track_lats, track_lons, plan_lats, plan_lons)
 }
 
+#' @title 
+#' points within radius (brute force)
+#'
+#' @description
+#' indices of points within \code{radius_km} of the query (lat/lon in degrees).
+#' uses local tangent-plane Euclidean distance in meters (see TCAS module).
+#'
+#' @param query_lat,query_lon query position (degrees).
+#' @param lats,lons point coordinates (degrees), same length.
+#' @param radius_km search radius in km.
+#' @return 
+#' integer vector of 1-based indices into \code{lats}/\code{lons}.
+#'
+#' @encoding UTF-8
+#' @export
+points_within_radius_km_bruteforce <- function(query_lat, query_lon, lats, lons, radius_km) {
+    .Call(`_AirRoute_points_within_radius_km_bruteforce`, query_lat, query_lon, lats, lons, radius_km)
+}
+
+#' @title points within radius (kd-tree)
+#'
+#' @description
+#' same result as \code{points_within_radius_km_bruteforce}, using a 2D kd-tree.
+#'
+#' @param query_lat,query_lon query position (degrees).
+#' @param lats,lons point coordinates (degrees), same length.
+#' @param radius_km search radius in km.
+#' @return integer vector of 1-based indices into \code{lats}/\code{lons}.
+#' @encoding UTF-8
+#' @export
+points_within_radius_km_kdtree <- function(query_lat, query_lon, lats, lons, radius_km) {
+    .Call(`_AirRoute_points_within_radius_km_kdtree`, query_lat, query_lon, lats, lons, radius_km)
+}
+

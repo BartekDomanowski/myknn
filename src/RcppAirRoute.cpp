@@ -1,10 +1,21 @@
 #include <Rcpp.h>
 #include "airroute.h"
+#include "tcas.h"
+#include <vector>
 
 using namespace Rcpp;
 
+//helper funcs
 static void check_lat_lon(const NumericVector& lats, const NumericVector& lons) {
     if (lats.size() != lons.size()) Rcpp::stop("lats and lons arrays must have the same length");
+}
+
+static IntegerVector to_r(const std::vector<std::size_t>& idx) {
+    IntegerVector out(idx.size());
+    for (std::size_t i=0; i<idx.size(); i++) {
+        out[i] = static_cast<int>(idx[i]+1);
+    }
+    return out;
 }
 
 
@@ -196,4 +207,56 @@ NumericVector track_cross_track_km(NumericVector track_lats, NumericVector track
         plan_lats.begin(), plan_lons.begin(),
         out.begin());
     return out;
+}
+
+//' @title 
+//' points within radius (brute force)
+//'
+//' @description
+//' indices of points within \code{radius_km} of the query (lat/lon in degrees).
+//' uses local tangent-plane Euclidean distance in meters (see TCAS module).
+//'
+//' @param query_lat,query_lon query position (degrees).
+//' @param lats,lons point coordinates (degrees), same length.
+//' @param radius_km search radius in km.
+//' @return 
+//' integer vector of 1-based indices into \code{lats}/\code{lons}.
+//'
+//' @encoding UTF-8
+//' @export
+// [[Rcpp::export]]
+IntegerVector points_within_radius_km_bruteforce(double query_lat, double query_lon,
+                                                 NumericVector lats, NumericVector lons,
+                                                 double radius_km) {
+    check_lat_lon(lats, lons);
+    std::vector<std::size_t> idx;
+    AirRoute::tcas::points_within_radius_km_bruteforce(
+        query_lat, query_lon,
+        static_cast<std::size_t>(lats.size()),
+        lats.begin(), lons.begin(),
+        radius_km, idx);
+    return to_r(idx);
+}
+
+//' @title points within radius (kd-tree)
+//'
+//' @description
+//' same result as \code{points_within_radius_km_bruteforce}, using a 2D kd-tree.
+//'
+//' @param query_lat,query_lon query position (degrees).
+//' @param lats,lons point coordinates (degrees), same length.
+//' @param radius_km search radius in km.
+//' @return integer vector of 1-based indices into \code{lats}/\code{lons}.
+//' @encoding UTF-8
+//' @export
+// [[Rcpp::export]]
+IntegerVector points_within_radius_km_kdtree(double query_lat, double query_lon,NumericVector lats, NumericVector lons, double radius_km) {
+    check_lat_lon(lats, lons);
+    std::vector<std::size_t> idx;
+    AirRoute::tcas::points_within_radius_km_kdtree(
+        query_lat, query_lon,
+        static_cast<std::size_t>(lats.size()),
+        lats.begin(), lons.begin(),
+        radius_km, idx);
+    return to_r(idx);
 }
