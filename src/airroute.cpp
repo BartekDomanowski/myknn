@@ -34,4 +34,28 @@ namespace AirRoute {
             cum[i] = cum[i-1] + dist_haversine_km(lats[i-1], lons[i-1], lats[i], lons[i]);
         }
     }
+
+
+
+    // deg functions to show dirs on the map
+    double initial_bearing_deg(double lat1, double lon1, double lat2, double lon2) {
+        const double phi1 = deg2rad(lat1);
+        const double phi2 = deg2rad(lat2);
+        const double dlon = deg2rad(lon2-lon1);
+        const double y = std::sin(dlon) * std::cos(phi2);
+        const double x = std::cos(phi1) * std::sin(phi2) - std::sin(phi1) * std::cos(phi2) * std::cos(dlon);
+        return rad2deg(std::atan2(y, x)) < 0.0 ? rad2deg(std::atan2(y, x)) + 360.0 : rad2deg(std::atan2(y, x));
+    }
+
+
+    void destination_point(double lat, double lon, double bearing_deg, double distance_km, double* out_lat, double* out_lon) {
+        const double brng = deg2rad(bearing_deg);
+        const double phi1 = deg2rad(lat);
+        const double lam1 = deg2rad(lon);
+        const double ang = distance_km / EARTH_RADIUS;
+        const double phi2 = std::asin(std::sin(phi1) * std::cos(ang) + std::cos(phi1) * std::sin(ang) * std::cos(brng));
+        const double lam2 = lam1 + std::atan2(std::sin(brng) * std::sin(ang) * std::cos(phi1), std::cos(ang) - std::sin(phi1) * std::sin(phi2));
+        *out_lat = rad2deg(phi2);
+        *out_lon = rad2deg(lam2);
+    }
 } 
