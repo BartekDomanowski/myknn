@@ -62,3 +62,48 @@ route_cumulative_length_km <- function(lats, lons) {
     .Call(`_AirRoute_route_cumulative_length_km`, lats, lons)
 }
 
+#' @title 
+#' initial bearing (deg)
+#'
+#' @description
+#' computes the initial bearing (deg) between two points on the WGS84 sphere.
+#'
+#' @param lat1 latitude of point 1 (degs).
+#' @param lon1 longitude of point 1 (degs).
+#' @param lat2 latitude of point 2 (degs).
+#' @param lon2 longitude of point 2 (degs).
+#'
+#' @return initial bearing in degrees, clockwise from north (0--360).
+#'
+#' @examples
+#' initial_bearing_deg(52.1657, 20.9671, 50.0379, 8.5622)  # WAW -> FRA ~ 260 deg
+#'
+#' @encoding UTF-8
+#' @export
+initial_bearing_deg <- function(lat1, lon1, lat2, lon2) {
+    .Call(`_AirRoute_initial_bearing_deg`, lat1, lon1, lat2, lon2)
+}
+
+#' @title
+#' destination point along a haversine arc
+#'
+#' @description
+#' given a start point, initial bearing, and distance, returns the
+#' destination on the WGS84 sphere (haversine forward geodesic).
+#'
+#' @param lat latitude of start point (degs).
+#' @param lon longitude of start point (degs).
+#' @param bearing_deg initial bearing (degs, clockwise from north).
+#' @param distance_km distance to travel (km).
+#'
+#' @return numeric vector of length 2: latitude and longitude (degs).
+#'
+#' @examples
+#' destination_point(52.1657, 20.9671, 90, 100)
+#'
+#' @encoding UTF-8
+#' @export
+destination_point <- function(lat, lon, bearing_deg, distance_km) {
+    .Call(`_AirRoute_destination_point`, lat, lon, bearing_deg, distance_km)
+}
+

@@ -48,11 +48,41 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// initial_bearing_deg
+double initial_bearing_deg(double lat1, double lon1, double lat2, double lon2);
+RcppExport SEXP _AirRoute_initial_bearing_deg(SEXP lat1SEXP, SEXP lon1SEXP, SEXP lat2SEXP, SEXP lon2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type lat1(lat1SEXP);
+    Rcpp::traits::input_parameter< double >::type lon1(lon1SEXP);
+    Rcpp::traits::input_parameter< double >::type lat2(lat2SEXP);
+    Rcpp::traits::input_parameter< double >::type lon2(lon2SEXP);
+    rcpp_result_gen = Rcpp::wrap(initial_bearing_deg(lat1, lon1, lat2, lon2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// destination_point
+NumericVector destination_point(double lat, double lon, double bearing_deg, double distance_km);
+RcppExport SEXP _AirRoute_destination_point(SEXP latSEXP, SEXP lonSEXP, SEXP bearing_degSEXP, SEXP distance_kmSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type lat(latSEXP);
+    Rcpp::traits::input_parameter< double >::type lon(lonSEXP);
+    Rcpp::traits::input_parameter< double >::type bearing_deg(bearing_degSEXP);
+    Rcpp::traits::input_parameter< double >::type distance_km(distance_kmSEXP);
+    rcpp_result_gen = Rcpp::wrap(destination_point(lat, lon, bearing_deg, distance_km));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_AirRoute_dist_haversine_km", (DL_FUNC) &_AirRoute_dist_haversine_km, 4},
     {"_AirRoute_route_length_km", (DL_FUNC) &_AirRoute_route_length_km, 2},
     {"_AirRoute_route_cumulative_length_km", (DL_FUNC) &_AirRoute_route_cumulative_length_km, 2},
+    {"_AirRoute_initial_bearing_deg", (DL_FUNC) &_AirRoute_initial_bearing_deg, 4},
+    {"_AirRoute_destination_point", (DL_FUNC) &_AirRoute_destination_point, 4},
     {NULL, NULL, 0}
 };
 
