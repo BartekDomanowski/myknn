@@ -73,7 +73,7 @@ namespace AirRoute {
     }
 
     double cross_track_segment_km(double lat_p, double lon_p, double lat_a, double lon_a, double lat_b, double lon_b) {
-        const double d12_km = dist_haversine_km(lat_a, lon_a, lat_b, lon_b);
+        const double d12_km = dist_haversine_km(lat_a, lon_a, lat_b, lon_b); //sphere dist
         if (d12_km < 1e-9) return dist_haversine_km(lat_a, lon_a, lat_p, lon_p);
         const double d13 = angular_distance_rad(lat_a, lon_a, lat_p, lon_p);
         if (d13 < 1e-12) return 0.0;
@@ -87,5 +87,32 @@ namespace AirRoute {
         if (at_km < 0.0) return dist_haversine_km(lat_a, lon_a, lat_p, lon_p);
         if (at_km > d12_km) return dist_haversine_km(lat_b, lon_b, lat_p, lon_p);
         return xt_km;
+    }
+
+
+    // to measure distance from perfection
+    double cross_track_route_km(double lat_p, double lon_p, std::size_t n, const double* lats, const double* lons,
+                                std::size_t* segment_index) {
+        if (n < 2) {
+            if (segment_index != nullptr) *segment_index = 0;
+            if (n == 1) return dist_haversine_km(lats[0], lons[0], lat_p, lon_p);            
+            return 0.0;
+        }
+        double best = cross_track_segment_km(lat_p, lon_p, lats[0], lons[0], lats[1], lons[1]);
+        std::size_t best_seg = 0;
+        for (std::size_t i = 1; i + 1 < n; ++i) {
+            const double d = cross_track_segment_km(lat_p, lon_p, lats[i], lons[i], lats[i + 1], lons[i + 1]);
+            if (d < best) {
+                best = d;
+                best_seg = i;
+            }
+        }
+        if (segment_index != nullptr) *segment_index = best_seg;
+        return best;
+    }
+
+    void track_cross_track_km(std::size_t n_track, const double* t_lats, const double* t_lons,std::size_t n_plan, const double* p_lats, const double* p_lons, double* out_km) {
+        for (std::size_t i = 0; i < n_track; ++i) 
+            out_km[i] = cross_track_route_km(t_lats[i], t_lons[i], n_plan, p_lats, p_lons, nullptr);
     }
 }

@@ -16,6 +16,8 @@ namespace AirRoute {
     // to measure distance from perfection
     double angular_distance_rad(double lat1, double lon1, double lat2, double lon2);
     double cross_track_segment_km(double lat_p, double lon_p, double lat_a, double lon_a, double lat_b, double lon_b);
+    double cross_track_route_km(double lat_p, double lon_p, std::size_t n, const double* lats, const double* lons,std::size_t* segment_index);
+    void track_cross_track_km(std::size_t n_track, const double* t_lats, const double* t_lons, std::size_t n_plan, const double* p_lats, const double* p_lons, double* out_km);
 } // namespace AirRoute
 
 #endif
