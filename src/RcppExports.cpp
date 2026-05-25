@@ -76,6 +76,50 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cross_track_segment_km
+double cross_track_segment_km(double lat_p, double lon_p, double lat_a, double lon_a, double lat_b, double lon_b);
+RcppExport SEXP _AirRoute_cross_track_segment_km(SEXP lat_pSEXP, SEXP lon_pSEXP, SEXP lat_aSEXP, SEXP lon_aSEXP, SEXP lat_bSEXP, SEXP lon_bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type lat_p(lat_pSEXP);
+    Rcpp::traits::input_parameter< double >::type lon_p(lon_pSEXP);
+    Rcpp::traits::input_parameter< double >::type lat_a(lat_aSEXP);
+    Rcpp::traits::input_parameter< double >::type lon_a(lon_aSEXP);
+    Rcpp::traits::input_parameter< double >::type lat_b(lat_bSEXP);
+    Rcpp::traits::input_parameter< double >::type lon_b(lon_bSEXP);
+    rcpp_result_gen = Rcpp::wrap(cross_track_segment_km(lat_p, lon_p, lat_a, lon_a, lat_b, lon_b));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cross_track_route_km
+double cross_track_route_km(double lat_p, double lon_p, NumericVector plan_lats, NumericVector plan_lons);
+RcppExport SEXP _AirRoute_cross_track_route_km(SEXP lat_pSEXP, SEXP lon_pSEXP, SEXP plan_latsSEXP, SEXP plan_lonsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type lat_p(lat_pSEXP);
+    Rcpp::traits::input_parameter< double >::type lon_p(lon_pSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type plan_lats(plan_latsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type plan_lons(plan_lonsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cross_track_route_km(lat_p, lon_p, plan_lats, plan_lons));
+    return rcpp_result_gen;
+END_RCPP
+}
+// track_cross_track_km
+NumericVector track_cross_track_km(NumericVector track_lats, NumericVector track_lons, NumericVector plan_lats, NumericVector plan_lons);
+RcppExport SEXP _AirRoute_track_cross_track_km(SEXP track_latsSEXP, SEXP track_lonsSEXP, SEXP plan_latsSEXP, SEXP plan_lonsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type track_lats(track_latsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type track_lons(track_lonsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type plan_lats(plan_latsSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type plan_lons(plan_lonsSEXP);
+    rcpp_result_gen = Rcpp::wrap(track_cross_track_km(track_lats, track_lons, plan_lats, plan_lons));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_AirRoute_dist_haversine_km", (DL_FUNC) &_AirRoute_dist_haversine_km, 4},
@@ -83,6 +127,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_AirRoute_route_cumulative_length_km", (DL_FUNC) &_AirRoute_route_cumulative_length_km, 2},
     {"_AirRoute_initial_bearing_deg", (DL_FUNC) &_AirRoute_initial_bearing_deg, 4},
     {"_AirRoute_destination_point", (DL_FUNC) &_AirRoute_destination_point, 4},
+    {"_AirRoute_cross_track_segment_km", (DL_FUNC) &_AirRoute_cross_track_segment_km, 6},
+    {"_AirRoute_cross_track_route_km", (DL_FUNC) &_AirRoute_cross_track_route_km, 4},
+    {"_AirRoute_track_cross_track_km", (DL_FUNC) &_AirRoute_track_cross_track_km, 4},
     {NULL, NULL, 0}
 };
 

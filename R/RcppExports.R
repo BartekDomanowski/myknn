@@ -107,3 +107,49 @@ destination_point <- function(lat, lon, bearing_deg, distance_km) {
     .Call(`_AirRoute_destination_point`, lat, lon, bearing_deg, distance_km)
 }
 
+#' @title
+#' cross-track distance to one route segment
+#'
+#' @description
+#' perpendicular distance from point P to great-circle segment A--B (km).
+#'
+#' @param lat_p,lon_p point P (degs).
+#' @param lat_a,lon_a,lat_b,lon_b segment endpoints A and B (degs).
+#' @return cross-track distance in km.
+#' @encoding UTF-8
+#' @export
+cross_track_segment_km <- function(lat_p, lon_p, lat_a, lon_a, lat_b, lon_b) {
+    .Call(`_AirRoute_cross_track_segment_km`, lat_p, lon_p, lat_a, lon_a, lat_b, lon_b)
+}
+
+#' @title
+#' cross-track distance to a polyline route
+#'
+#' @description
+#' minimum cross-track distance from P to any segment of the planned route.
+#'
+#' @param lat_p,lon_p point P (degs).
+#' @param plan_lats,plan_lons planned route waypoints (degs).
+#' @return minimum cross-track distance in km.
+#' @encoding UTF-8
+#' @export
+cross_track_route_km <- function(lat_p, lon_p, plan_lats, plan_lons) {
+    .Call(`_AirRoute_cross_track_route_km`, lat_p, lon_p, plan_lats, plan_lons)
+}
+
+#' @title
+#' cross-track distance for each track point
+#'
+#' @description
+#' for each point on the track, returns cross-track distance to the
+#' nearest segment of the planned route.
+#'
+#' @param track_lats,track_lons actual track (degs).
+#' @param plan_lats,plan_lons planned route (degs).
+#' @return numeric vector of cross-track distances in km (same length as track).
+#' @encoding UTF-8
+#' @export
+track_cross_track_km <- function(track_lats, track_lons, plan_lats, plan_lons) {
+    .Call(`_AirRoute_track_cross_track_km`, track_lats, track_lons, plan_lats, plan_lons)
+}
+

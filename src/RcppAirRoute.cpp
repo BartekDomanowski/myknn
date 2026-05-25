@@ -131,3 +131,69 @@ NumericVector destination_point(double lat, double lon, double bearing_deg, doub
     AirRoute::destination_point(lat, lon, bearing_deg, distance_km, &out_lat, &out_lon);
     return NumericVector::create(out_lat, out_lon);
 }
+
+//' @title
+//' cross-track distance to one route segment
+//'
+//' @description
+//' perpendicular distance from point P to great-circle segment A--B (km).
+//'
+//' @param lat_p,lon_p point P (degs).
+//' @param lat_a,lon_a,lat_b,lon_b segment endpoints A and B (degs).
+//' @return cross-track distance in km.
+//' @encoding UTF-8
+//' @export
+// [[Rcpp::export]]
+double cross_track_segment_km(double lat_p, double lon_p,
+                            double lat_a, double lon_a, double lat_b, double lon_b) {
+    return AirRoute::cross_track_segment_km(lat_p, lon_p, lat_a, lon_a, lat_b, lon_b);
+}
+
+//' @title
+//' cross-track distance to a polyline route
+//'
+//' @description
+//' minimum cross-track distance from P to any segment of the planned route.
+//'
+//' @param lat_p,lon_p point P (degs).
+//' @param plan_lats,plan_lons planned route waypoints (degs).
+//' @return minimum cross-track distance in km.
+//' @encoding UTF-8
+//' @export
+// [[Rcpp::export]]
+double cross_track_route_km(double lat_p, double lon_p,
+                            NumericVector plan_lats, NumericVector plan_lons) {
+    check_lat_lon(plan_lats, plan_lons);
+    return AirRoute::cross_track_route_km(
+        lat_p, lon_p,
+        static_cast<std::size_t>(plan_lats.size()),
+        plan_lats.begin(), plan_lons.begin(),
+        nullptr);
+}
+
+//' @title
+//' cross-track distance for each track point
+//'
+//' @description
+//' for each point on the track, returns cross-track distance to the
+//' nearest segment of the planned route.
+//'
+//' @param track_lats,track_lons actual track (degs).
+//' @param plan_lats,plan_lons planned route (degs).
+//' @return numeric vector of cross-track distances in km (same length as track).
+//' @encoding UTF-8
+//' @export
+// [[Rcpp::export]]
+NumericVector track_cross_track_km(NumericVector track_lats, NumericVector track_lons,
+                                   NumericVector plan_lats, NumericVector plan_lons) {
+    check_lat_lon(track_lats, track_lons);
+    check_lat_lon(plan_lats, plan_lons);
+    NumericVector out(track_lats.size());
+    AirRoute::track_cross_track_km(
+        static_cast<std::size_t>(track_lats.size()),
+        track_lats.begin(), track_lons.begin(),
+        static_cast<std::size_t>(plan_lats.size()),
+        plan_lats.begin(), plan_lons.begin(),
+        out.begin());
+    return out;
+}
