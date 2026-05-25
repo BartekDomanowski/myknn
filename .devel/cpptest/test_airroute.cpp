@@ -39,12 +39,25 @@ static void test_destination_point() {
     assert(tmp > 95.0 && tmp < 105.0);
 }
 
+static void test_cross_track_segment_midpoint() {
+    const double xt = AirRoute::cross_track_segment_km(52.05, 21.0, 52.0, 21.0, 52.1, 21.0);
+    assert(xt < 0.5);
+}
+
+static void test_cross_track_segment_waw_on_leg() {
+    const double xt = AirRoute::cross_track_segment_km(52.1657, 20.9671, 52.1657, 20.9671, 50.0379, 8.5622);
+    assert(xt < 50.0);
+}
+
+
 int main() {
     test_dist_haversine_km();
     test_route_length_km();
     test_route_cumulative_length_km();
     test_initial_bearing_deg();
     test_destination_point();
+    test_cross_track_segment_midpoint();
+    test_cross_track_segment_waw_on_leg();
     std::printf("OK\n");
     return 0;
 }

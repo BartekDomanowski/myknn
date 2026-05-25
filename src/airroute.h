@@ -13,6 +13,9 @@ namespace AirRoute {
     // deg functions to show dirs on the map
     double initial_bearing_deg(double lat1, double lon1, double lat2, double lon2);
     void destination_point(double lat, double lon, double bearing_deg, double distance_km, double* out_lat, double* out_lon);
+    // to measure distance from perfection
+    double angular_distance_rad(double lat1, double lon1, double lat2, double lon2);
+    double cross_track_segment_km(double lat_p, double lon_p, double lat_a, double lon_a, double lat_b, double lon_b);
 } // namespace AirRoute
 
 #endif
