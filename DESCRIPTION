@@ -13,4 +13,12 @@ License: AGPL-3 + file LICENSE
 Description: flight-route metrics, track deviation, airspace proximity
     detection, comparison with quitefastmst as a bonus.
 URL: https://github.com/BartekDomanowski/AirRoute
+Imports:
+    Rcpp
+LinkingTo:
+    Rcpp
+Suggests:
+    tinytest,
+    roxygen2
 Encoding: UTF-8
+RoxygenNote: 7.3.3
