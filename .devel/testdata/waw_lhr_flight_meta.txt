@@ -1,9 +1,0 @@
-{
-  "callsign": "BAW845",
-  "icao24": "400960",
-  "firstSeen": 1778778042,
-  "lastSeen": 1778787047,
-  "estDepartureAirport": "EPWA",
-  "estArrivalAirport": "EGLL",
-  "n_points": 1074
-}
