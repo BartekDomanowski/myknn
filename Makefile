@@ -8,15 +8,19 @@ PKG_NAME = AirRoute
 PKG_TARBALL = $(PKG_NAME)_$(PKG_VERSION).tar.gz
 CPP_TEST_SRC = .devel/cpptest/test_airroute.cpp
 CPP_TEST_BIN = .devel/cpptest/test_airroute
+TCAS_TEST_SRC = .devel/cpptest/test_tcas_brute.cpp
+TCAS_TEST_BIN = .devel/cpptest/test_tcas_brute
 
 clean:
-	rm -f $(PKG_TARBALL) $(CPP_TEST_BIN)
+	rm -f $(PKG_TARBALL) $(CPP_TEST_BIN) $(TCAS_TEST_BIN)
 	rm -f src/*.o src/*.so *.so
 	rm -rf $(PKG_NAME).Rcheck
 
 test:
 	$(CXX) $(CXXFLAGS) -o $(CPP_TEST_BIN) $(CPP_TEST_SRC) src/airroute.cpp
 	./$(CPP_TEST_BIN)
+	$(CXX) $(CXXFLAGS) -o $(TCAS_TEST_BIN) $(TCAS_TEST_SRC) src/airroute.cpp src/tcas.cpp
+	./$(TCAS_TEST_BIN)
 
 r_test:
 	$(RSCRIPT) -e 'Rcpp::compileAttributes(".")'
