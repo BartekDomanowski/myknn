@@ -1,0 +1,12 @@
+^\.Rlibs
+^\.devel
+^\.nojekyll
+^__pycache__
+^\.pytest_cache
+^airroute
+^pyproject\.toml
+^setup\.py
+^Makefile$
+^MANIFEST\.in$
+^\.github
+^docs/\.gitkeep$
