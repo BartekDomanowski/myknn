@@ -1,0 +1,16 @@
+Package: AirRoute
+Type: Package
+Title: AirRoute - Aviation Route Metrics 
+Version: 0.0.1
+Date: 2026-05-25
+Authors@R:
+    person("Bartłomiej", "Domanowski",
+        role = c("aut", "cre", "cph"),
+        email = "01187317@pw.edu.pl"
+    )
+BugReports: https://github.com/BartekDomanowski/AirRoute/issues
+License: AGPL-3 + file LICENSE
+Description: flight-route metrics, track deviation, airspace proximity
+    detection, comparison with quitefastmst as a bonus.
+URL: https://github.com/BartekDomanowski/AirRoute
+Encoding: UTF-8
