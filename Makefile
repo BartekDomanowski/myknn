@@ -19,9 +19,9 @@ test:
 	./$(CPP_TEST_BIN)
 
 r_test:
-	R CMD build .
 	$(RSCRIPT) -e 'Rcpp::compileAttributes(".")'
 	$(RSCRIPT) -e 'roxygen2::roxygenise(".")'
-	$(RSCRIPT) -e 'library(AirRoute); stopifnot(abs(dist_haversine_km(52.1657, 20.9671, 51.47, -0.4543) - 1469) < 20)'
+	R CMD INSTALL .
+	$(RSCRIPT) .devel/tinytest.R
 
 all: test r_test clean 

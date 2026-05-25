@@ -6,7 +6,7 @@
 \alias{AirRoute-package}
 \title{AirRoute: AirRoute - Aviation Route Metrics}
 \description{
-Flight-route metrics on the WGS84 sphere with a shared C++ core and R bindings. Track deviation and airspace proximity detection planned; quitefastmst integration as a bonus.
+flight-route metrics, track deviation, airspace proximity detection, comparison with quitefastmst as a bonus.
 }
 \seealso{
 Useful links:

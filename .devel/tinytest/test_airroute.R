@@ -1,0 +1,8 @@
+expect_true(dist_haversine_km(52.1657, 20.9671, 51.47, -0.4543) > 1460 && dist_haversine_km(52.1657, 20.9671, 51.47, -0.4543) < 1480)
+expect_true(dist_haversine_km(50.0379, 8.5622, 51.47, -0.4543) > 650 && dist_haversine_km(50.0379, 8.5622, 51.47, -0.4543) < 670)
+lats <- c(52.1657, 50.0379, 51.47)
+lons <- c(20.9671, 8.5622,  -0.4543)
+expect_equal(route_length_km(lats, lons), 1550.136, tolerance = 1e-6)
+expect_true(route_length_km(lats, lons) > 0)
+expect_equal(route_cumulative_length_km(lats, lons)[1], 0)
+expect_equal(route_cumulative_length_km(lats, lons)[length(route_cumulative_length_km(lats, lons))], route_length_km(lats, lons))
