@@ -16,8 +16,6 @@ namespace kdtree2d {
             KDTree2D() = default;
             ~KDTree2D();
             void build(const std::vector<Point2D>& points);
-            void clear();
-            bool nearest(double query_x, double query_y, std::size_t& out_index) const;
             void within_radius_m(double query_x, double query_y, double radius_m, std::vector<std::size_t>& out_indices) const;
 
         private:

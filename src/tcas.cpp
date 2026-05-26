@@ -7,12 +7,12 @@
 
 namespace AirRoute {
 namespace tcas {
-    static constexpr double kMetersPerDegLat = 111320.0;
+    // Equirectangular: x = (lat-lat_ref)*cos(phi_m), y = (lon-lon_ref)
     static void latlon_to_local_m(double ref_lat, double ref_lon, double lat, double lon, double* x_m, double* y_m) {
-        const double m_per_deg_lon = kMetersPerDegLat * std::cos(deg2rad(ref_lat));
-        *x_m = (lon - ref_lon) * m_per_deg_lon;
-        *y_m = (lat - ref_lat) * kMetersPerDegLat;
-    }
+        const double cos_phi_m = std::cos(deg2rad(0.5 * (ref_lat + lat)));
+        *x_m = (lon - ref_lon) * cos_phi_m;
+        *y_m = (lat - ref_lat);
+    } // d = R * sqrt(x^2 + y^2) but it's not necessary here to compute the distance
 
     static void build_local_points(double query_lat, double query_lon, std::size_t n, const double* lats, const double* lons, std::vector<kdtree2d::Point2D>& pts) {
         pts.resize(n);
@@ -55,10 +55,8 @@ namespace tcas {
         if (n == 0) return;
         if (lats == nullptr || lons == nullptr) throw std::domain_error("lats and lons must be non-null when n > 0");
         if (radius_km < 0.0) throw std::domain_error("radius_km must be non-negative");
-
         std::vector<kdtree2d::Point2D> pts;
         build_local_points(query_lat, query_lon, n, lats, lons, pts);
-
         kdtree2d::KDTree2D tree;
         tree.build(pts);
         tree.within_radius_m(0.0, 0.0, radius_km * 1000.0, out_indices);

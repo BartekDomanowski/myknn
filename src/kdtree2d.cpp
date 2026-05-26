@@ -1,20 +1,15 @@
 #include "kdtree2d.h"
 
-#include <cmath>
-
 namespace AirRoute {
 namespace kdtree2d {
     KDTree2D::~KDTree2D() {
-        clear();
-    }
-
-    void KDTree2D::clear() {
         destroy_tree(root_);
         root_ = nullptr;
     }
 
     void KDTree2D::build(const std::vector<Point2D>& points) { // O (n log n)
-        clear();
+        destroy_tree(root_);
+        root_ = nullptr;
         for (const Point2D& p : points) {
             root_ = insert(root_, p.index, p.x, p.y, true);
         }
@@ -49,14 +44,6 @@ namespace kdtree2d {
         return root;
     }
 
-
-
-    bool KDTree2D::nearest(double qx, double qy, std::size_t& out_index) const { // O (log n) 
-        Node2D* best = nearest_node(root_, qx, qy, true);
-        if (best == nullptr) return false;
-        out_index = best->idx;
-        return true;
-    }
 
     void KDTree2D::within_radius_m(double qx, double qy, double radius_m, std::vector<std::size_t>& out_indices) const {
         out_indices.clear();
