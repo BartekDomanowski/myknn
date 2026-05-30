@@ -1,2 +1,3 @@
 PKG_CXXFLAGS = -std=c++17
-OBJECTS = airroute.o kdtree2d.o tcas.o RcppAirRoute.o RcppExports.o
+OBJECTS = kdtree.o RcppExports.o
+PKG_LIBS = -lm

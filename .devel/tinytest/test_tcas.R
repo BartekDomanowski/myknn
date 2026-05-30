@@ -1,5 +1,0 @@
-lats <- c(52.1657, 52.17, 50.0)
-lons <- c(20.9671, 20.97, 8.0)
-brute <- points_within_radius_km_bruteforce(52.1657, 20.9671, lats, lons, 10.0)
-kd <- points_within_radius_km_kdtree(52.1657, 20.9671, lats, lons, 10.0)
-expect_equal(brute, kd)

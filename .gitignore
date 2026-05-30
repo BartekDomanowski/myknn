@@ -75,7 +75,6 @@ MANIFEST
 # Output files from R CMD check
 /*.Rcheck/
 
-# C++ tests (.devel/cpptest as a additional test folder)
-.devel/cpptest/test_airroute
-.devel/cpptest/test_airroute.exe
+# C tests (.devel/ctest)
+.devel/ctest/test_kdtree
 

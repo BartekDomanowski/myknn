@@ -17,7 +17,7 @@ static void expect_knn(kdtree *tree, const double *point, size_t k,
     }
 }
 
-// punkty x = 0, 10, 20; zapytanie x = 1 → (0,1) 
+// punkty x = 0, 10, 20; zapytanie x = 1 → (0,1)
 static void test_1d_nearest_easy(void) {
     const double data[] = {0.0, 10.0, 20.0};
     kdtree *tree = kdtree_build(data, 3, 1);
