@@ -3,6 +3,18 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+static double kdtree_get(const kdtree_layout *layout, size_t sample, size_t feature) {
+    return layout->data[sample * layout->sample_stride + feature * layout->feature_stride];
+}
+
+kdtree_layout kdtree_layout_rowmajor(const double *data, size_t n_samples, size_t n_features) {
+    return (kdtree_layout){data, n_samples, n_features, n_features, 1};
+}
+
+kdtree_layout kdtree_layout_colmajor(const double *data, size_t n_samples, size_t n_features) {
+    return (kdtree_layout){data, n_samples, n_features, 1, n_samples};
+}
+
 static void swap_node_idx(node *a, node *b) {
     size_t tmp = a->idx;
     a->idx = b->idx;
