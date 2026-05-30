@@ -4,12 +4,18 @@ CC = cc
 CFLAGS = -std=c11 -O2 -Wall -Wextra -Isrc
 KDTREE_TEST_SRC = .devel/ctest/test_kdtree.c
 KDTREE_TEST_BIN = .devel/ctest/test_kdtree
+R_LIB = .devel/r-lib
+
+all: test clean
 
 clean:
 	rm -f $(KDTREE_TEST_BIN)
+	find . \( -name '*.o' -o -name '*.so' \) -delete
 
 test:
 	$(CC) $(CFLAGS) -o $(KDTREE_TEST_BIN) $(KDTREE_TEST_SRC) src/kdtree.c -lm
 	./$(KDTREE_TEST_BIN)
-
-all: test
+	mkdir -p $(R_LIB)
+	R CMD INSTALL --library=$(R_LIB) .
+	R_LIBS=$(CURDIR)/$(R_LIB) Rscript .devel/tinytest.R
+	R CMD check . --no-manual --no-vignettes

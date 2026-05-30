@@ -1,7 +1,11 @@
 # Changelog
 
-## To Do
-Everything
+## Version 0.0.2 (2026-05-30)
 
-## Version 0.0.1 (2026-05-25)
-* Initial repository layout.
+* k-d tree core in C
+* row/column-major layouts via strides 
+* C tests and R tests
+
+## Planned
+
+* Python / Cython layer

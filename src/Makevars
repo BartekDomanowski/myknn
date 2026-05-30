@@ -1,3 +1,2 @@
-PKG_CXXFLAGS = -std=c++17
-OBJECTS = kdtree.o RcppExports.o
+OBJECTS = kdtree.o kdtree_r.o
 PKG_LIBS = -lm

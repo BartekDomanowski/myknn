@@ -2,7 +2,7 @@
 
 About
 ------------
-R and Python package with a C/C++ core for aviation route metrics on the WGS84 sphere: distances, track, plan deviation, proximity detection.
+R and Python package to speedup Scikit Learn knn algos in certain situations
 
 Repository stucture
 ------------

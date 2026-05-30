@@ -4,9 +4,9 @@
 \name{AirRoute-package}
 \alias{AirRoute}
 \alias{AirRoute-package}
-\title{AirRoute: AirRoute - Aviation Route Metrics}
+\title{AirRoute: k-d Tree Nearest Neighbours}
 \description{
-flight-route metrics, track deviation, airspace proximity detection, comparison with quitefastmst as a bonus.
+Fast k-nearest neighbour search with a pure C k-d tree core and R bindings. Training data is referenced without copying from R matrices. Part of the broader AirRoute project (future: Python bindings and geodesic route metrics).
 }
 \seealso{
 Useful links:

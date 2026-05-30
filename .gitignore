@@ -85,8 +85,11 @@ src/*.dll
 
 .devel/ctest/test_kdtree
 .devel/cpptest/
+.devel/r-lib/
 .devel/libkdtree.so
 .devel/libkdtree.dylib
+
+src/symbols.rds
 
 airroute/__pycache__/
 airroute/_tcas*.so

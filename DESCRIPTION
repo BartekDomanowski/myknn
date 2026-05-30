@@ -1,22 +1,20 @@
 Package: AirRoute
 Type: Package
-Title: AirRoute - Aviation Route Metrics 
+Title: AirRoute - k-d Tree Nearest Neighbours currently
 Version: 0.0.1
 Date: 2026-05-25
-Authors@R:
+Authors@R: c(
     person("Bartłomiej", "Domanowski",
-        role = c("aut", "cre", "cph"),
-        email = "01187317@pw.edu.pl"
+           email = "01187317@pw.edu.pl",
+           role = c("aut", "cre", "cph"))
     )
+Author: Bartłomiej Domanowski [aut, cre, cph]
+Maintainer: Bartłomiej Domanowski <01187317@pw.edu.pl>
 BugReports: https://github.com/BartekDomanowski/AirRoute/issues
 License: AGPL-3 + file LICENSE
-Description: flight-route metrics, track deviation, airspace proximity
-    detection, comparison with quitefastmst as a bonus.
+Description: k-d tree for k-nearest neighbour search in Euclidean feature space
 URL: https://github.com/BartekDomanowski/AirRoute
-Imports:
-    Rcpp
-LinkingTo:
-    Rcpp
+NeedsCompilation: yes
 Suggests:
     tinytest,
     roxygen2

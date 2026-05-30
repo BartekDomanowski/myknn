@@ -1,4 +1,3 @@
-#' @useDynLib AirRoute, .registration = TRUE
-#' @importFrom Rcpp sourceCpp
+#' @useDynLib AirRoute
 #' @keywords internal
 "_PACKAGE"
