@@ -75,6 +75,21 @@ MANIFEST
 # Output files from R CMD check
 /*.Rcheck/
 
-# C tests (.devel/ctest)
+# macOS
+.DS_Store
+**/.DS_Store
+
+src/*.o
+src/*.so
+src/*.dll
+
 .devel/ctest/test_kdtree
+.devel/cpptest/
+.devel/libkdtree.so
+.devel/libkdtree.dylib
+
+airroute/__pycache__/
+airroute/_tcas*.so
+build/
+.pytest_cache/
 
