@@ -15,6 +15,8 @@ clean:
 test:
 	$(CC) $(CFLAGS) -o $(KDTREE_TEST_BIN) $(KDTREE_TEST_SRC) src/kdtree.c -lm
 	./$(KDTREE_TEST_BIN)
+	pip install -e ".[dev]"
+	pytest .devel/pytest -q
 	mkdir -p $(R_LIB)
 	R CMD INSTALL --library=$(R_LIB) .
 	R_LIBS=$(CURDIR)/$(R_LIB) Rscript .devel/tinytest.R
