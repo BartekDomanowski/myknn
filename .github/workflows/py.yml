@@ -1,0 +1,35 @@
+name: AirRoute for Python
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.14']
+
+    steps:
+    - uses: actions/checkout@v6
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        #sudo apt-get -y upgrade
+        sudo apt-get -y install python3-dev
+        python3 -m venv python-venv
+        source python-venv/bin/activate
+        python3 -m pip install --upgrade pip
+        python3 -m pip install wheel pytest --upgrade
+    - name: Install and Test Python package
+      run: |
+        source python-venv/bin/activate
+        python3 -m pip install ".[dev]"
+        pytest .devel/pytest -q
