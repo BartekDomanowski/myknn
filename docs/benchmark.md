@@ -12,6 +12,8 @@ title: Benchmarks
 `X`: `n_samples` × `n_features`, i.i.d. standard normal, `float64`.  
 Mean time over **100** runs (seconds). `k = 5`, **128** queries per loop (one point per call).
 
+**Time is in seconds.** **Less is better.**
+
 ### Build
 
 | n_samples | n_features | sklearn | airroute |
