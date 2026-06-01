@@ -1,11 +1,22 @@
 # Changelog
 
+## Version 0.0.3 (2026-05-31)
+
+* Python/Cython binding 
+* pytest tests 
+* Multi-platform CI for R and Python
+* Python docstrings
+
 ## Version 0.0.2 (2026-05-30)
 
 * k-d tree core in C
 * row/column-major layouts via strides 
 * C tests and R tests
 
+## Version 0.0.1 (2026-05-25)
+
+* Everything to do
+
 ## Planned
 
-* Python / Cython layer
+* GitHub Pages project site

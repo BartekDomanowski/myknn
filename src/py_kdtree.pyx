@@ -54,6 +54,22 @@ cdef class _KDTreeHandle:
 
 
 def kdtree_build(np.ndarray data not None):
+    """
+    kdtree_build(X)
+    Build a k-d tree over training points X matrix n_samples * n_features.
+
+    Parameters
+    ----------
+
+    data : ndarray, shape (n_samples, n_features)
+        Training data. Must be float64 and C-contiguous (row-major).
+
+    Returns
+    -------
+
+    tree
+        KDTree structure to be used in queries.
+    """
     if data.ndim != 2:
         raise ValueError("'data' must be a 2D array")
     cdef np.ndarray[double, ndim=2, mode="c"] cdata = np.ascontiguousarray(
@@ -85,6 +101,34 @@ def kdtree_query(
     int k=1,
     bint return_distance=True,
 ):
+    """
+    tree = kdtree_build(X)
+    kdtree_query(tree, point, k, return_distance=True)
+    Query k nearest neighbours of a given point.
+
+    Parameters
+    ----------
+
+    tree
+        Tree returned by :func:`kdtree_build`.
+    point : ndarray, shape (n_features,)
+        Query point. Must be ``float64``.
+    k : int, default 1
+        Number of neighbours (positive, at most ``n_samples`` at build time).
+    return_distance : bool, default True
+        If ``True``, return ``(distances, indices)`` like ``sklearn.neighbors.KDTree.query``. 
+        If ``False``, return only ``indices``.
+
+    Returns
+    -------
+    
+    distances, indices : ndarray
+        When ``return_distance=True``: Euclidean distances and row
+        indices into the training data.
+    indices : ndarray
+        When ``return_distance=False``: indices only.
+
+    """
     if tree.tree == NULL:
         raise ValueError("invalid k-d tree")
 

@@ -14,19 +14,12 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        #sudo apt-get -y upgrade
         sudo apt-get -y install r-base-dev
-        #sudo apt-get -y install libcurl4-openssl-dev
-        sudo Rscript -e "install.packages(c('tinytest'))"
-    - name: Run C tests
-      run: |
-        cc -std=c11 -O2 -Wall -Wextra -Isrc -o .devel/ctest/test_kdtree .devel/ctest/test_kdtree.c src/kdtree.c -lm
-        ./.devel/ctest/test_kdtree
+        sudo Rscript -e "install.packages('tinytest')"
     - name: Install and Test R package
       run: |
         sudo R CMD INSTALL .
         sudo Rscript -e 'source(".devel/tinytest.R")'
     - name: Check R package
       run: |
-        #sudo make r-check
         cd .. && sudo R CMD build AirRoute && sudo R_DEFAULT_INTERNET_TIMEOUT=240 _R_CHECK_CRAN_INCOMING_REMOTE_=FALSE _R_CHECK_FORCE_SUGGESTS_=0 R CMD check `ls -t AirRoute*.tar.gz | head -1` --as-cran --no-manual

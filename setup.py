@@ -15,7 +15,7 @@ extensions = [
 
 setup(
     name="airroute",
-    version="0.0.1",
+    version="0.0.3",
     python_requires=">=3.10",
     packages=["airroute"],
     install_requires=["numpy>=1.20"],
