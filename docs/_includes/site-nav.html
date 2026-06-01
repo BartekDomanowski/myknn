@@ -1,0 +1,14 @@
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var header = document.querySelector("header");
+  if (!header || document.getElementById("site-nav")) return;
+  var nav = document.createElement("p");
+  nav.className = "view";
+  nav.id = "site-nav";
+  nav.innerHTML =
+    '<a href="{{ "/" | relative_url }}">Home</a><br>' +
+    '<a href="{{ "/benchmark.html" | relative_url }}">Benchmarks</a>';
+  var github = header.querySelector("p.view");
+  header.insertBefore(nav, github);
+});
+</script>
