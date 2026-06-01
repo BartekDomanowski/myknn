@@ -21,12 +21,16 @@ jobs:
         with:
           extra-packages: any::tinytest
       - name: Install and test
+        shell: bash
         run: |
           R CMD INSTALL .
           Rscript -e 'source(".devel/tinytest.R")'
       - name: Check R package (CRAN, Linux only)
         if: runner.os == 'Linux'
+        shell: bash
         run: |
           cd ..
           R CMD build AirRoute
-          R CMD check "$(ls -t AirRoute_*.tar.gz | head -1)" --no-manual
+          _R_CHECK_CRAN_INCOMING_REMOTE_=FALSE \
+          _R_CHECK_FORCE_SUGGESTS_=0 \
+          R CMD check "$(ls -t AirRoute_*.tar.gz | head -1)" --as-cran --no-manual
