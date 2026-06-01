@@ -87,6 +87,9 @@ src/*.dll
 .devel/cpptest/
 .devel/r-lib/
 .devel/libkdtree.so
+
+# local-only benchmarks
+local_benchmark/
 .devel/libkdtree.dylib
 
 src/symbols.rds

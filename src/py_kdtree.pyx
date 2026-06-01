@@ -2,7 +2,8 @@
 
 cimport numpy as np
 import numpy as np
-from libc.stdlib cimport free, malloc
+from libc.stdlib cimport free, malloc, realloc
+from libc.string cimport memcpy
 from libc.stddef cimport size_t
 
 np.import_array()
@@ -47,10 +48,33 @@ cdef class _KDTreeHandle:
     cdef object data
     cdef size_t n_samples
     cdef size_t n_features
+    cdef size_t *idx_buf
+    cdef double *dist_buf
+    cdef size_t buf_capacity
 
     def __dealloc__(self):
+        if self.idx_buf != NULL:
+            free(self.idx_buf)
+        if self.dist_buf != NULL:
+            free(self.dist_buf)
         if self.tree != NULL:
             c_kdtree_free(self.tree)
+
+    cdef int _ensure_query_bufs(self, size_t k) except -1:
+        if k <= self.buf_capacity:
+            return 0
+        cdef size_t *new_idx = <size_t *>realloc(
+            self.idx_buf, k * sizeof(size_t),
+        )
+        cdef double *new_dist = <double *>realloc(
+            self.dist_buf, k * sizeof(double),
+        )
+        if new_idx == NULL or new_dist == NULL:
+            raise MemoryError("failed to allocate query buffers")
+        self.idx_buf = new_idx
+        self.dist_buf = new_dist
+        self.buf_capacity = k
+        return 0
 
 
 def kdtree_build(np.ndarray data not None):
@@ -132,9 +156,15 @@ def kdtree_query(
     if tree.tree == NULL:
         raise ValueError("invalid k-d tree")
 
-    cdef np.ndarray[double, ndim=1, mode="c"] cpoint = np.ascontiguousarray(
-        point, dtype=np.float64,
-    )
+    cdef np.ndarray[double, ndim=1, mode="c"] cpoint
+    if (
+        np.PyArray_NDIM(point) == 1
+        and np.PyArray_TYPE(point) == np.NPY_FLOAT64
+        and np.PyArray_IS_C_CONTIGUOUS(point)
+    ):
+        cpoint = point
+    else:
+        cpoint = np.ascontiguousarray(point, dtype=np.float64)
     if <size_t>cpoint.shape[0] != tree.n_features:
         raise ValueError(
             f"'point' must have length {tree.n_features}",
@@ -144,32 +174,29 @@ def kdtree_query(
     if <size_t>k > tree.n_samples:
         raise ValueError("'k' cannot exceed the number of training points")
 
-    cdef size_t *idx_buf = <size_t *>malloc(<size_t>k * sizeof(size_t))
-    cdef double *dist_buf = <double *>malloc(<size_t>k * sizeof(double))
-    if idx_buf == NULL or dist_buf == NULL:
-        free(idx_buf)
-        free(dist_buf)
-        raise MemoryError("failed to allocate query buffers")
+    cdef size_t ck = <size_t>k
+    tree._ensure_query_bufs(ck)
 
-    cdef int rc
-    cdef size_t i
-    cdef np.ndarray idx_arr
+    cdef int rc = _query_c(
+        tree.tree, &cpoint[0], ck, tree.idx_buf, tree.dist_buf,
+    )
+    if rc != 0:
+        raise RuntimeError("k-d tree query failed")
+
+    cdef np.ndarray idx_arr = np.empty(k, dtype=np.intp)
     cdef np.ndarray dist_arr
-    try:
-        rc = _query_c(tree.tree, &cpoint[0], <size_t>k, idx_buf, dist_buf)
-        if rc != 0:
-            raise RuntimeError("k-d tree query failed")
+    memcpy(
+        np.PyArray_DATA(idx_arr),
+        tree.idx_buf,
+        ck * sizeof(size_t),
+    )
 
-        idx_arr = np.empty(k, dtype=np.intp)
-        for i in range(<size_t>k):
-            idx_arr[i] = idx_buf[i]
-
-        if return_distance:
-            dist_arr = np.empty(k, dtype=np.float64)
-            for i in range(<size_t>k):
-                dist_arr[i] = dist_buf[i]
-            return dist_arr, idx_arr
-        return idx_arr
-    finally:
-        free(idx_buf)
-        free(dist_buf)
+    if return_distance:
+        dist_arr = np.empty(k, dtype=np.float64)
+        memcpy(
+            np.PyArray_DATA(dist_arr),
+            tree.dist_buf,
+            ck * sizeof(double),
+        )
+        return dist_arr, idx_arr
+    return idx_arr

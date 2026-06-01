@@ -1,3 +1,6 @@
 title: AirRoute
 description: k-d tree k-NN search (R and Python)
 theme: jekyll-theme-minimal
+header_pages:
+  - index.md
+  - benchmark.md

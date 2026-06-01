@@ -1,3 +1,7 @@
+---
+title: Home
+---
+
 # AirRoute
 
 k-d tree for k-nearest neighbours (R + Python, C core).
