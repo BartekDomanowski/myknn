@@ -2,6 +2,35 @@
 requires = [
     "Cython",
     "numpy>=1.20",
-    "setuptools",
+    "setuptools>=61",
 ]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "airroute"
+version = "0.0.3"
+description = "k-d tree for k-nearest neighbour search with a C core and Cython bindings"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "AGPL-3.0-or-later" }
+authors = [
+    { name = "Bartłomiej Domanowski", email = "01187317@pw.edu.pl" },
+]
+dependencies = [
+    "numpy>=1.20",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7",
+    "Cython",
+]
+
+[project.urls]
+Homepage = "https://bartekdomanowski.github.io/AirRoute/"
+Repository = "https://github.com/BartekDomanowski/AirRoute"
+Issues = "https://github.com/BartekDomanowski/AirRoute/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["airroute*"]
