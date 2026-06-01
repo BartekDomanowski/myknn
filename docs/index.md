@@ -8,7 +8,7 @@ k-d tree for k-nearest neighbours (R + Python, C core).
 
 ## About
 
-Shared **C** implementation (`src/kdtree.c`), **R** bindings (column-major matrices), **Python** via Cython (row-major `float64`). Benchmarks vs scikit-learn: [Benchmarks](benchmark.html).
+Shared **C** implementation (`src/kdtree.c`), **R** bindings (column-major matrices), **Python** via Cython (row-major `float64`). API: `kdtree_query` (k-NN) and `kdtree_query_radius` (neighbours within distance `r`), aligned with scikit-learn where noted. Benchmarks vs scikit-learn: [Benchmarks](benchmark.html).
 
 ## Installation
 
@@ -22,7 +22,7 @@ R CMD INSTALL .           # R
 
 ```python
 import numpy as np
-from airroute import kdtree_build, kdtree_query
+from airroute import kdtree_build, kdtree_query, kdtree_query_radius
 
 rng = np.random.RandomState(0)
 X = rng.random_sample((10, 3)).astype(np.float64)
@@ -48,6 +48,30 @@ print(ind)
 
 ```
 [0 3 1]
+```
+
+```python
+ind = kdtree_query_radius(tree, X[0], r=0.3)
+print(ind)
+```
+
+**Output:**
+
+```
+[1 0 3]
+```
+
+```python
+ind, dist = kdtree_query_radius(tree, X[0], r=0.3, return_distance=True)
+print(ind)
+print(dist)
+```
+
+**Output:**
+
+```
+[1 0 3]
+[0.29473397 0.         0.19662693]
 ```
 
 ### AirRoute (R)
@@ -78,6 +102,30 @@ $indices
 
 $distances
 [1] 0.0000000 0.1966269 0.2947340
+```
+
+```r
+kdtree_query_radius(tree, X[1, ], r = 0.3)
+```
+
+**Output:**
+
+```
+[1] 2 1 4
+```
+
+```r
+kdtree_query_radius(tree, X[1, ], r = 0.3, return_distance = TRUE)
+```
+
+**Output:**
+
+```
+$indices
+[1] 2 1 4
+
+$distances
+[1] 0.2947340 0.0000000 0.1966269
 ```
 
 ## Tests
