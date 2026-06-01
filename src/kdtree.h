@@ -31,6 +31,7 @@ typedef struct _kdtree_radius_result {
 
 kdtree *kdtree_build(const kdtree_layout *layout);
 int kdtree_query(const kdtree *tree, const double *point, size_t k, size_t *out_indices, double *out_distances);
+int kdtree_query_radius_buf(const kdtree *tree, const double *point, double r, int return_distance, size_t *indices, size_t capacity, size_t *out_count, double *distances);
 int kdtree_query_radius(const kdtree *tree, const double *point, double r, int return_distance, kdtree_radius_result *out);
 void kdtree_radius_result_clear(kdtree_radius_result *out);
 void kdtree_free(kdtree *tree);

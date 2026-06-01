@@ -81,23 +81,24 @@ SEXP kdtree_query_radius_r(SEXP tree, SEXP point, SEXP r, SEXP return_distance) 
     if (ret_dist == NA_LOGICAL)
         Rf_error("'return_distance' must be TRUE or FALSE");
 
-    kdtree_radius_result res = {0};
-    if (kdtree_query_radius(t, REAL(point), rr, ret_dist, &res) != 0)
+    size_t n = t->layout.n_samples;
+    size_t *idx = (size_t *)R_alloc(n, sizeof(size_t));
+    double *dist = ret_dist ? (double *)R_alloc(n, sizeof(double)) : NULL;
+    size_t count = 0;
+    if (kdtree_query_radius_buf(t, REAL(point), rr, ret_dist, idx, n, &count, dist) != 0)
         Rf_error("k-d tree radius query failed");
 
-    SEXP i = PROTECT(Rf_allocVector(INTSXP, (R_xlen_t)res.count));
-    for (size_t j = 0; j < res.count; j++)
-        INTEGER(i)[j] = (int)res.indices[j] + 1;
-    
+    SEXP i = PROTECT(Rf_allocVector(INTSXP, (R_xlen_t)count));
+    for (size_t j = 0; j < count; j++)
+        INTEGER(i)[j] = (int)idx[j] + 1;
+
     if (!ret_dist) {
-        kdtree_radius_result_clear(&res);
         UNPROTECT(1);
         return i;
     }
-    SEXP d = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t)res.count));
-    for (size_t j = 0; j < res.count; j++)
-        REAL(d)[j] = res.distances[j];
-    kdtree_radius_result_clear(&res);
+    SEXP d = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t)count));
+    for (size_t j = 0; j < count; j++)
+        REAL(d)[j] = dist[j];
     SEXP ans = PROTECT(Rf_allocVector(VECSXP, 2));
     SET_VECTOR_ELT(ans, 0, i);
     SET_VECTOR_ELT(ans, 1, d);

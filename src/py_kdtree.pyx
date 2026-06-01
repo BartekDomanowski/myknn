@@ -23,11 +23,6 @@ cdef extern from "kdtree.h":
         const double *data, size_t n_samples, size_t n_features,
     ) nogil
     kdtree *c_kdtree_build "kdtree_build" (const kdtree_layout *layout) nogil
-    ctypedef struct kdtree_radius_result:
-        size_t *indices
-        double *distances
-        size_t count
-
     int c_kdtree_query "kdtree_query" (
         const kdtree *tree,
         const double *point,
@@ -35,15 +30,15 @@ cdef extern from "kdtree.h":
         size_t *out_indices,
         double *out_distances,
     ) nogil
-    int c_kdtree_query_radius "kdtree_query_radius" (
+    int c_kdtree_query_radius_buf "kdtree_query_radius_buf" (
         const kdtree *tree,
         const double *point,
         double r,
         int return_distance,
-        kdtree_radius_result *out,
-    ) nogil
-    void c_kdtree_radius_result_clear "kdtree_radius_result_clear" (
-        kdtree_radius_result *out,
+        size_t *indices,
+        size_t capacity,
+        size_t *out_count,
+        double *distances,
     ) nogil
     void c_kdtree_free "kdtree_free" (kdtree *tree) nogil
 
@@ -63,9 +58,10 @@ cdef class _KDTreeHandle:
     cdef object data
     cdef size_t n_samples
     cdef size_t n_features
+    # Shared scratch for kdtree_query (needs k) and kdtree_query_radius (needs n_samples).
     cdef size_t *idx_buf
     cdef double *dist_buf
-    cdef size_t buf_capacity
+    cdef size_t work_capacity
 
     def __dealloc__(self):
         if self.idx_buf != NULL:
@@ -75,20 +71,20 @@ cdef class _KDTreeHandle:
         if self.tree != NULL:
             c_kdtree_free(self.tree)
 
-    cdef int _ensure_query_bufs(self, size_t k) except -1:
-        if k <= self.buf_capacity:
+    cdef int _ensure_work_bufs(self, size_t needed) except -1:
+        if needed <= self.work_capacity:
             return 0
         cdef size_t *new_idx = <size_t *>realloc(
-            self.idx_buf, k * sizeof(size_t),
+            self.idx_buf, needed * sizeof(size_t),
         )
         cdef double *new_dist = <double *>realloc(
-            self.dist_buf, k * sizeof(double),
+            self.dist_buf, needed * sizeof(double),
         )
         if new_idx == NULL or new_dist == NULL:
             raise MemoryError("failed to allocate query buffers")
         self.idx_buf = new_idx
         self.dist_buf = new_dist
-        self.buf_capacity = k
+        self.work_capacity = needed
         return 0
 
 
@@ -190,7 +186,7 @@ def kdtree_query(
         raise ValueError("'k' cannot exceed the number of training points")
 
     cdef size_t ck = <size_t>k
-    tree._ensure_query_bufs(ck)
+    tree._ensure_work_bufs(ck)
 
     cdef int rc = _query_c(
         tree.tree, &cpoint[0], ck, tree.idx_buf, tree.dist_buf,
@@ -271,39 +267,42 @@ def kdtree_query_radius(
             f"'point' must have length {tree.n_features}",
         )
 
-    cdef kdtree_radius_result res
-    res.indices = NULL
-    res.distances = NULL
-    res.count = 0
+    tree._ensure_work_bufs(tree.n_samples)
 
+    cdef size_t count = 0
     cdef int rc
+    cdef double *dist_ptr = NULL
+    if return_distance:
+        dist_ptr = tree.dist_buf
     with nogil:
-        rc = c_kdtree_query_radius(
-            tree.tree, &cpoint[0], r, <int>return_distance, &res,
+        rc = c_kdtree_query_radius_buf(
+            tree.tree,
+            &cpoint[0],
+            r,
+            <int>return_distance,
+            tree.idx_buf,
+            tree.n_samples,
+            &count,
+            dist_ptr,
         )
     if rc != 0:
         raise RuntimeError("k-d tree radius query failed")
 
-    cdef size_t n = res.count
-    cdef np.ndarray idx_arr
-    cdef np.ndarray dist_arr
-
-    if n == 0:
-        idx_arr = np.empty(0, dtype=np.intp)
-        c_kdtree_radius_result_clear(&res)
-        if return_distance:
-            dist_arr = np.empty(0, dtype=np.float64)
-            return idx_arr, dist_arr
-        return idx_arr
-
-    idx_arr = np.empty(n, dtype=np.intp)
-    memcpy(np.PyArray_DATA(idx_arr), res.indices, n * sizeof(size_t))
+    cdef np.ndarray idx_arr = np.empty(count, dtype=np.intp)
+    if count > 0:
+        memcpy(
+            np.PyArray_DATA(idx_arr),
+            tree.idx_buf,
+            count * sizeof(size_t),
+        )
 
     if return_distance:
-        dist_arr = np.empty(n, dtype=np.float64)
-        memcpy(np.PyArray_DATA(dist_arr), res.distances, n * sizeof(double))
-        c_kdtree_radius_result_clear(&res)
+        dist_arr = np.empty(count, dtype=np.float64)
+        if count > 0:
+            memcpy(
+                np.PyArray_DATA(dist_arr),
+                tree.dist_buf,
+                count * sizeof(double),
+            )
         return idx_arr, dist_arr
-
-    c_kdtree_radius_result_clear(&res)
     return idx_arr
