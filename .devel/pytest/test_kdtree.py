@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from airroute import kdtree_build, kdtree_query
+from airroute import kdtree_build, kdtree_query, kdtree_query_radius
 
 
 def expect_knn(tree, point, k, want_idx, want_dist, return_distance=True, tol=1e-9):
@@ -74,3 +74,17 @@ def test_matches_sklearn_on_small_set():
     np.testing.assert_array_equal(ind, sk_ind[0])
     np.testing.assert_allclose(dist, sk_dist[0], rtol=0, atol=1e-12)
 
+
+def test_radius_subset():
+    tree = kdtree_build(np.array([[0.0, 0.0], [1.0, 0.0], [100.0, 0.0]]))
+    idx = kdtree_query_radius(tree, np.array([0.0, 0.0]), r=1.5)
+    assert len(idx) == 2
+    assert idx[0] == 1
+    assert idx[1] == 0
+
+
+def test_radius_zero_at_point():
+    tree = kdtree_build(np.array([[0.0, 0.0], [1.0, 0.0], [100.0, 0.0]]))
+    idx = kdtree_query_radius(tree, np.array([0.0, 0.0]), r=0.0)
+    assert len(idx) == 1
+    assert idx[0] == 0

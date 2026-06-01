@@ -62,3 +62,49 @@ SEXP kdtree_query_r(SEXP tree, SEXP point, SEXP k) {
     UNPROTECT(4);
     return ans;
 }
+
+SEXP kdtree_query_radius_r(SEXP tree, SEXP point, SEXP r, SEXP return_distance) {
+    if (TYPEOF(tree) != EXTPTRSXP)  Rf_error("invalid k-d tree");
+    kdtree *t = (kdtree *)R_ExternalPtrAddr(tree);
+    if (t == NULL || t->root == NULL)
+        Rf_error("invalid k-d tree");
+    if (!Rf_isReal(point))
+        Rf_error("'point' must be numeric");
+    if (Rf_length(point) != (R_xlen_t)t->layout.n_features)
+        Rf_error("'point' must have length %zu", t->layout.n_features);
+    if (!Rf_isReal(r) || Rf_length(r) != 1)
+        Rf_error("'r' must be a numeric scalar");
+    double rr = REAL(r)[0];
+    if (rr < 0.0)
+        Rf_error("'r' must be non-negative");
+    int ret_dist = Rf_asLogical(return_distance);
+    if (ret_dist == NA_LOGICAL)
+        Rf_error("'return_distance' must be TRUE or FALSE");
+
+    kdtree_radius_result res = {0};
+    if (kdtree_query_radius(t, REAL(point), rr, ret_dist, &res) != 0)
+        Rf_error("k-d tree radius query failed");
+
+    SEXP i = PROTECT(Rf_allocVector(INTSXP, (R_xlen_t)res.count));
+    for (size_t j = 0; j < res.count; j++)
+        INTEGER(i)[j] = (int)res.indices[j] + 1;
+    
+    if (!ret_dist) {
+        kdtree_radius_result_clear(&res);
+        UNPROTECT(1);
+        return i;
+    }
+    SEXP d = PROTECT(Rf_allocVector(REALSXP, (R_xlen_t)res.count));
+    for (size_t j = 0; j < res.count; j++)
+        REAL(d)[j] = res.distances[j];
+    kdtree_radius_result_clear(&res);
+    SEXP ans = PROTECT(Rf_allocVector(VECSXP, 2));
+    SET_VECTOR_ELT(ans, 0, i);
+    SET_VECTOR_ELT(ans, 1, d);
+    SEXP nm = PROTECT(Rf_allocVector(STRSXP, 2));
+    SET_STRING_ELT(nm, 0, Rf_mkChar("indices"));
+    SET_STRING_ELT(nm, 1, Rf_mkChar("distances"));
+    Rf_setAttrib(ans, R_NamesSymbol, nm);
+    UNPROTECT(4);
+    return ans;
+}

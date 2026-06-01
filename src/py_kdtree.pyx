@@ -23,12 +23,27 @@ cdef extern from "kdtree.h":
         const double *data, size_t n_samples, size_t n_features,
     ) nogil
     kdtree *c_kdtree_build "kdtree_build" (const kdtree_layout *layout) nogil
+    ctypedef struct kdtree_radius_result:
+        size_t *indices
+        double *distances
+        size_t count
+
     int c_kdtree_query "kdtree_query" (
         const kdtree *tree,
         const double *point,
         size_t k,
         size_t *out_indices,
         double *out_distances,
+    ) nogil
+    int c_kdtree_query_radius "kdtree_query_radius" (
+        const kdtree *tree,
+        const double *point,
+        double r,
+        int return_distance,
+        kdtree_radius_result *out,
+    ) nogil
+    void c_kdtree_radius_result_clear "kdtree_radius_result_clear" (
+        kdtree_radius_result *out,
     ) nogil
     void c_kdtree_free "kdtree_free" (kdtree *tree) nogil
 
@@ -199,4 +214,96 @@ def kdtree_query(
             ck * sizeof(double),
         )
         return dist_arr, idx_arr
+    return idx_arr
+
+
+def kdtree_query_radius(
+    _KDTreeHandle tree not None,
+    np.ndarray point not None,
+    double r,
+    bint return_distance=False,
+):
+    """
+    tree = kdtree_build(X)
+    kdtree_query_radius(tree, point, r, return_distance=False)
+    Query neighbours within Euclidean distance ``r`` of a point.
+
+    Parameters
+    ----------
+
+    tree
+        Tree returned by :func:`kdtree_build`.
+
+    point : ndarray, shape (n_features,)
+        Query point. Must be ``float64``.
+
+    r : float
+        Radius; neighbours with distance ``<= r`` are returned.
+
+    return_distance : bool, default False
+        If ``True``, return ``(indices, distances)``
+        If ``False``, return only ``indices``.
+
+    Returns
+    -------
+
+    indices : ndarray
+        When ``return_distance=False``: row indices into training data.
+    indices, distances : ndarray
+        When ``return_distance=True``: indices and Euclidean distances unsorted
+    """
+    if tree.tree == NULL:
+        raise ValueError("invalid k-d tree")
+    if r < 0.0:
+        raise ValueError("'r' must be non-negative")
+
+    cdef np.ndarray[double, ndim=1, mode="c"] cpoint
+    if (
+        np.PyArray_NDIM(point) == 1
+        and np.PyArray_TYPE(point) == np.NPY_FLOAT64
+        and np.PyArray_IS_C_CONTIGUOUS(point)
+    ):
+        cpoint = point
+    else:
+        cpoint = np.ascontiguousarray(point, dtype=np.float64)
+    if <size_t>cpoint.shape[0] != tree.n_features:
+        raise ValueError(
+            f"'point' must have length {tree.n_features}",
+        )
+
+    cdef kdtree_radius_result res
+    res.indices = NULL
+    res.distances = NULL
+    res.count = 0
+
+    cdef int rc
+    with nogil:
+        rc = c_kdtree_query_radius(
+            tree.tree, &cpoint[0], r, <int>return_distance, &res,
+        )
+    if rc != 0:
+        raise RuntimeError("k-d tree radius query failed")
+
+    cdef size_t n = res.count
+    cdef np.ndarray idx_arr
+    cdef np.ndarray dist_arr
+
+    if n == 0:
+        idx_arr = np.empty(0, dtype=np.intp)
+        c_kdtree_radius_result_clear(&res)
+        if return_distance:
+            dist_arr = np.empty(0, dtype=np.float64)
+            return idx_arr, dist_arr
+        return idx_arr
+
+    idx_arr = np.empty(n, dtype=np.intp)
+    memcpy(np.PyArray_DATA(idx_arr), res.indices, n * sizeof(size_t))
+
+    if return_distance:
+        dist_arr = np.empty(n, dtype=np.float64)
+        memcpy(np.PyArray_DATA(dist_arr), res.distances, n * sizeof(double))
+        c_kdtree_radius_result_clear(&res)
+        return idx_arr, dist_arr
+
+    c_kdtree_radius_result_clear(&res)
     return idx_arr

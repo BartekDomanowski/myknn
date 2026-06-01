@@ -32,3 +32,22 @@ kdtree_build <- function(data) {
 kdtree_query <- function(tree, point, k) {
     .Call("kdtree_query_r", tree, point, as.integer(k), PACKAGE = "AirRoute")
 }
+
+#' Query neighbours within a radius
+#'
+#' @param tree object returned by [kdtree_build].
+#' @param point numeric vector of length \code{ncol(data)} used at build time.
+#' @param r non-negative radius (Euclidean distance).
+#' @param return_distance if \code{TRUE}, return a list with
+#'   \code{indices} (1-based) and \code{distances}; if \code{FALSE}, return
+#'   only the index vector.
+#' @return integer vector of 1-based row indices, or a named list when
+#'   \code{return_distance = TRUE}.
+#' @export
+#' @examples
+#' data <- matrix(c(0, 0, 1, 0, 100, 0), ncol = 2, byrow = TRUE)
+#' tree <- kdtree_build(data)
+#' kdtree_query_radius(tree, c(0, 0), r = 1.5)
+kdtree_query_radius <- function(tree, point, r, return_distance = FALSE) {
+    .Call("kdtree_query_radius_r", tree, point, as.double(r), return_distance, PACKAGE = "AirRoute")
+}

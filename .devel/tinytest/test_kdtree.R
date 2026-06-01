@@ -26,3 +26,12 @@ expect_equal(length(res_all$distances), 3L)
 
 # k larger than n must error
 expect_error(kdtree_query(tree_2d, c(0, 0), 5L))
+
+idx_radius <- kdtree_query_radius(tree_2d, c(0, 0), r = 1.5)
+expect_equal(length(idx_radius), 2L)
+expect_equal(idx_radius[1], 2L)
+expect_equal(idx_radius[2], 1L)
+
+idx_zero <- kdtree_query_radius(tree_train, c(0, 0), r = 0)
+expect_equal(length(idx_zero), 1L)
+expect_equal(idx_zero[1], 1L)

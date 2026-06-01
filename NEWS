@@ -1,3 +1,7 @@
+## Version 0.0.4 (2026-06-01)
+
+* query_radius
+
 ## Version 0.0.3 (2026-05-31)
 
 * Python/Cython binding 
@@ -19,5 +23,4 @@
 
 ## Planned
 
-* query_radius
 * OpenMP

@@ -2,7 +2,6 @@
 #include <assert.h>
 #include <math.h>
 #include <stdio.h>
-#include <string.h>
 
 static void expect_knn(kdtree *tree, const double *point, size_t k,
                        const size_t *want_idx, const double *want_dist) {
@@ -75,10 +74,43 @@ static void test_colmajor_layout(void) {
     kdtree_free(tree);
 }
 
+static void test_radius_subset(void) {
+    const double data[] = {0.0, 0.0, 1.0, 0.0, 100.0, 0.0};
+    kdtree_layout layout = kdtree_layout_rowmajor(data, 3, 2);
+    kdtree *tree = kdtree_build(&layout);
+    assert(tree != NULL);
+    const double query[] = {0.0, 0.0};
+    kdtree_radius_result res = {0};
+    assert(kdtree_query_radius(tree, query, 1.5, 0, &res) == 0);
+    assert(res.count == 2);
+    assert(res.indices[0] == 1);
+    assert(res.indices[1] == 0);
+    kdtree_radius_result_clear(&res);
+    kdtree_free(tree);
+}
+
+static void test_radius_zero_at_point(void) {
+    const double data[] = {0.0, 0.0, 1.0, 0.0, 100.0, 0.0};
+    kdtree_layout layout = kdtree_layout_rowmajor(data, 3, 2);
+    kdtree *tree = kdtree_build(&layout);
+    assert(tree != NULL);
+    const double query[] = {0.0, 0.0};
+    kdtree_radius_result res = {0};
+    assert(kdtree_query_radius(tree, query, 0.0, 1, &res) == 0);
+    assert(res.count == 1);
+    assert(res.indices[0] == 0);
+    assert(res.distances[0] == 0.0);
+    kdtree_radius_result_clear(&res);
+    kdtree_free(tree);
+}
+
+
 int main(void) {
     test_1d_nearest_easy();
     test_query_on_training_point();
     test_two_closest();
+    test_radius_subset();
+    test_radius_zero_at_point();
     test_colmajor_layout();
     return 0;
 }
