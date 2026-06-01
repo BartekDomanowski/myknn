@@ -18,3 +18,11 @@ expect_knn(tree_train, c(0, 0), 1L, 1L, 0)
 data_2d <- matrix(c(0, 0, 1, 0, 100, 0), ncol = 2, byrow = TRUE)
 tree_2d <- kdtree_build(data_2d)
 expect_knn(tree_2d, c(0, 0), 2L, c(1L, 2L), c(0, 1))
+
+# k equals number of training points
+res_all <- kdtree_query(tree_2d, c(0, 0), 3L)
+expect_equal(length(res_all$indices), 3L)
+expect_equal(length(res_all$distances), 3L)
+
+# k larger than n must error
+expect_error(kdtree_query(tree_2d, c(0, 0), 5L))

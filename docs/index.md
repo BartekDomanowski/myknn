@@ -6,6 +6,10 @@ title: Home
 
 k-d tree for k-nearest neighbours (R + Python, C core).
 
+## About
+
+Shared **C** implementation (`src/kdtree.c`), **R** bindings (column-major matrices), **Python** via Cython (row-major `float64`). Benchmarks vs scikit-learn: [Benchmarks](benchmark.html).
+
 ## Installation
 
 ```bash

@@ -6,7 +6,6 @@ include setup.py
 include src/kdtree.h
 include src/kdtree.c
 include src/*.pyx
-include src/py_kdtree.c
 include airroute/__init__.py
 exclude src/kdtree_r.c
 exclude src/Makevars*

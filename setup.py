@@ -19,6 +19,6 @@ setup(
     python_requires=">=3.10",
     packages=["airroute"],
     install_requires=["numpy>=1.20"],
-    extras_require={"dev": ["pytest>=7", "Cython"]},
+    extras_require={"dev": ["pytest>=7", "Cython", "scikit-learn>=1.0"]},
     ext_modules=cythonize(extensions, language_level=3),
 )

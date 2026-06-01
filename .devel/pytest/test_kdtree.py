@@ -42,3 +42,35 @@ def test_return_distance_false_is_not_tuple():
     assert isinstance(result, np.ndarray)
     assert not isinstance(result, tuple)
 
+
+def test_k_equals_n():
+    data = np.array([[0.0, 0.0], [1.0, 0.0], [100.0, 0.0]])
+    tree = kdtree_build(data)
+    dist, idx = kdtree_query(tree, np.array([0.0, 0.0]), k=3, return_distance=True)
+    assert len(idx) == 3
+    assert len(dist) == 3
+
+
+def test_k_too_large_raises():
+    data = np.array([[0.0, 0.0], [1.0, 0.0]])
+    tree = kdtree_build(data)
+    with pytest.raises(ValueError, match="cannot exceed"):
+        kdtree_query(tree, np.array([0.0, 0.0]), k=3)
+
+
+def test_matches_sklearn_on_small_set():
+    pytest.importorskip("sklearn.neighbors")
+    from sklearn.neighbors import KDTree as SklearnKDTree
+
+    rng = np.random.RandomState(42)
+    X = rng.randn(20, 3).astype(np.float64)
+    q = X[5]
+    k = 3
+
+    tree = kdtree_build(X)
+    dist, ind = kdtree_query(tree, q, k=k, return_distance=True)
+
+    sk_dist, sk_ind = SklearnKDTree(X).query(q.reshape(1, -1), k=k)
+    np.testing.assert_array_equal(ind, sk_ind[0])
+    np.testing.assert_allclose(dist, sk_dist[0], rtol=0, atol=1e-12)
+

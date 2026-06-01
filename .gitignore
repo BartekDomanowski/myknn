@@ -93,6 +93,7 @@ local_benchmark/
 .devel/libkdtree.dylib
 
 src/symbols.rds
+src/py_kdtree.c
 
 airroute/__pycache__/
 airroute/_tcas*.so
