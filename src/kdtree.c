@@ -21,15 +21,11 @@ static void swap_node_idx(node *a, node *b) {
     b->idx = tmp;
 }
 
-static double layout_axis_value(const kdtree_layout *layout, size_t sample, size_t axis) {
-    return kdtree_get(layout, sample, axis);
-}
-
 static size_t partition_by_axis(node *nodes, size_t left, size_t right, size_t axis, const kdtree_layout *layout) {
-    double pivot = layout_axis_value(layout, nodes[right].idx, axis);
+    double pivot = kdtree_get(layout, nodes[right].idx, axis);
     size_t i = left;
     for (size_t j = left; j < right; j++) {
-        if (layout_axis_value(layout, nodes[j].idx, axis) <= pivot) {
+        if (kdtree_get(layout, nodes[j].idx, axis) <= pivot) {
             swap_node_idx(&nodes[i++], &nodes[j]);
         }
     }
@@ -150,37 +146,26 @@ void kdtree_free(kdtree *tree) {
     free(tree);
 }
 
-typedef struct _radius_buf {
-    size_t *indices;
-    double *distances;
-    size_t count;
-    size_t capacity;
-    int store_distance;
-} radius_buf;
-static int radius_buf_push(radius_buf *buf, size_t idx, double dist_sq) {
-    if (buf->count >= buf->capacity) return -1;
-    buf->indices[buf->count] = idx;
-    if (buf->store_distance) buf->distances[buf->count] = sqrt(dist_sq);
-    buf->count++;
-    return 0;
-}
+static void kdtree_radius_search(const node *curr, const kdtree *tree, const double *point,
+                                 size_t depth, double r_sq, size_t *indices, double *distances,
+                                 size_t *count) {
+    if (curr == NULL) return;
 
-static int kdtree_radius_search(const node *curr, const kdtree *tree, const double *point, size_t depth, double r_sq, radius_buf *buf) {
-    if (curr == NULL) return 0;
     double dist_sq = euclidean_distance_squared(&tree->layout, curr->idx, point);
     if (dist_sq <= r_sq) {
-        if (radius_buf_push(buf, curr->idx, dist_sq) != 0) return -1;
+        indices[*count] = curr->idx;
+        if (distances != NULL) distances[*count] = dist_sq;
+        (*count)++;
     }
     size_t ax = depth % tree->layout.n_features;
     double coord_ax = kdtree_get(&tree->layout, curr->idx, ax);
     const node *near = (point[ax] < coord_ax) ? curr->left : curr->right;
     const node *far = (point[ax] < coord_ax) ? curr->right : curr->left;
-    if (kdtree_radius_search(near, tree, point, depth + 1, r_sq, buf) != 0) return -1;
+    kdtree_radius_search(near, tree, point, depth + 1, r_sq, indices, distances, count);
     double plane = (point[ax] - coord_ax) * (point[ax] - coord_ax);
     if (plane <= r_sq) {
-        if (kdtree_radius_search(far, tree, point, depth + 1, r_sq, buf) != 0) return -1;
+        kdtree_radius_search(far, tree, point, depth + 1, r_sq, indices, distances, count);
     }
-    return 0;
 }
 
 void kdtree_radius_result_clear(kdtree_radius_result *out) {
@@ -199,43 +184,44 @@ void kdtree_radius_result_clear(kdtree_radius_result *out) {
 int kdtree_query_radius_buf(const kdtree *tree, const double *point, double r, int return_distance, size_t *indices, size_t capacity, size_t *out_count, double *distances) {
     if (tree == NULL || point == NULL || indices == NULL || out_count == NULL|| tree->root == NULL || r < 0.0 || capacity < tree->layout.n_samples) return -1;
     if (return_distance && distances == NULL) return -1;
-    radius_buf buf = {indices, return_distance ? distances : NULL, 0, capacity, return_distance != 0};
+    size_t count = 0;
     double r_sq = r * r;
-    if (kdtree_radius_search(tree->root, tree, point, 0, r_sq, &buf) != 0) return -1;
-    *out_count = buf.count;
+    kdtree_radius_search(tree->root, tree, point, 0, r_sq, indices,
+                         return_distance ? distances : NULL, &count);
+    if (distances != NULL) {
+        for (size_t i = 0; i < count; i++) {
+            distances[i] = sqrt(distances[i]);
+        }
+    }
+    *out_count = count;
     return 0;
 }
 
 int kdtree_query_radius(const kdtree *tree, const double *point, double r, int return_distance, kdtree_radius_result *out) {
     if (tree == NULL || point == NULL || out == NULL || tree->root == NULL || r < 0.0) return -1;
     size_t n = tree->layout.n_samples;
-    size_t *indices = (size_t *)malloc(n * sizeof(size_t));
-    if (indices == NULL) return -1;
-    double *distances = NULL;
-    if (return_distance) {
-        distances = (double *)malloc(n * sizeof(double));
-        if (distances == NULL) {
-            free(indices);
-            return -1;
-        }
-    }
-    size_t count = 0;
-    if (kdtree_query_radius_buf(tree, point, r, return_distance, indices, n, &count, distances) != 0) {
-        free(indices);
-        free(distances);
+    out->indices = (size_t *)malloc(n * sizeof(size_t));
+    if (out->indices == NULL) return -1;
+    out->distances = return_distance ? (double *)malloc(n * sizeof(double)) : NULL;
+    if (return_distance && out->distances == NULL) {
+        free(out->indices);
+        out->indices = NULL;
         return -1;
     }
-    size_t *out_idx = (size_t *)realloc(indices, count * sizeof(size_t));
-    if (out_idx == NULL) out_idx = indices;
-    else indices = out_idx;
-    double *out_dist = NULL;
-    if (return_distance) {
-        out_dist = (double *)realloc(distances, count * sizeof(double));
-        if (out_dist == NULL) out_dist = distances;
-        else distances = out_dist;
+
+    out->count = 0;
+    if (kdtree_query_radius_buf(tree, point, r, return_distance, out->indices, n, &out->count, out->distances) != 0) {
+        kdtree_radius_result_clear(out);
+        return -1;
     }
-    out->indices = indices;
-    out->distances = out_dist;
-    out->count = count;
+
+    if (out->count < n) {
+        size_t *idx = (size_t *)realloc(out->indices, out->count * sizeof(size_t));
+        if (idx != NULL) out->indices = idx;
+        if (out->distances != NULL) {
+            double *d = (double *)realloc(out->distances, out->count * sizeof(double));
+            if (d != NULL) out->distances = d;
+        }
+    }
     return 0;
 }

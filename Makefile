@@ -21,6 +21,7 @@ test: $(KDTREE_TEST_BIN)
 	pip install -e ".[dev]"
 	pytest .devel/pytest -q
 	mkdir -p $(R_LIB)
+	-rm -rf $(R_LIB)/00LOCK-*
 	R CMD INSTALL --library=$(R_LIB) .
 	R_LIBS=$(CURDIR)/$(R_LIB) Rscript .devel/tinytest.R
 	R CMD check . --no-manual --no-vignettes
