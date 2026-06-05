@@ -31,6 +31,4 @@ jobs:
         run: |
           cd ..
           R CMD build myknn
-          _R_CHECK_CRAN_INCOMING_REMOTE_=FALSE \
-          _R_CHECK_FORCE_SUGGESTS_=0 \
           R CMD check myknn_*.tar.gz --as-cran 
