@@ -20,6 +20,8 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::tinytest
+      - uses: r-lib/actions/setup-tinytex@v2
+        if: runner.os == 'Linux'
       - name: Install and test
         shell: bash
         run: |
