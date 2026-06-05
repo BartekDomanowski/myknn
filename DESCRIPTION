@@ -1,8 +1,8 @@
 Package: myknn
 Type: Package
-Title: myknn - k-d Tree Nearest Neighbours currently
+Title: k-d Tree for Nearest Neighbours
 Version: 0.0.4
-Date: 2026-05-25
+Date: 2026-06-05
 Authors@R: c(
     person("Bartłomiej", "Domanowski",
            email = "01187317@pw.edu.pl",
@@ -12,7 +12,8 @@ Author: Bartłomiej Domanowski [aut, cre, cph]
 Maintainer: Bartłomiej Domanowski <01187317@pw.edu.pl>
 BugReports: https://github.com/BartekDomanowski/myknn/issues
 License: AGPL-3 + file LICENSE
-Description: k-d tree for k-nearest neighbour search in Euclidean feature space
+Description: Implements a k-d tree for k-nearest neighbour search in Euclidean
+    feature space.
 URL: https://github.com/BartekDomanowski/myknn
 NeedsCompilation: yes
 Depends: R (>= 4.0.0)

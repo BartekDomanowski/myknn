@@ -10,3 +10,9 @@
 ^MANIFEST\.in$
 ^\.github
 ^docs/
+^local_benchmark$
+^src/py_kdtree\.pyx$
+^src/py_kdtree\.c$
+^src/.*\.o$
+^src/.*\.so$
+^src/symbols\.rds$
