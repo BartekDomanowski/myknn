@@ -5,8 +5,7 @@ About
 R and Python package to speedup Scikit Learn knn algos in certain situations
 The core is implemented in C with R and Python bindings. The Python
 ``kdtree_query`` and ``kdtree_query_radius`` follow
-``sklearn.neighbors.KDTree`` conventions (e.g. ``return_distance``);
-this is not a full scikit-learn replacement.
+``sklearn.neighbors.KDTree`` conventions (e.g. ``return_distance``)
 
 Installation
 ------------
