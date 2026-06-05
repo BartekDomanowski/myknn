@@ -10,7 +10,7 @@ kdtree_build(data)
 \item{data}{numeric matrix (\code{n} rows, \code{p} columns).}
 }
 \value{
-an external pointer of class \code{AirRoute_kdtree}; freed
+an external pointer of class \code{myknn_kdtree}; freed
   automatically when garbage-collected.
 }
 \description{

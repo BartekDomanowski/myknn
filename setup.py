@@ -6,7 +6,7 @@ from setuptools import Extension, setup
 
 extensions = [
     Extension(
-        "airroute.py_kdtree",
+        "myknn.py_kdtree",
         sources=["src/py_kdtree.pyx", "src/kdtree.c"],
         include_dirs=["src", np.get_include()],
         libraries=["m"] if sys.platform != "win32" else [],
@@ -14,10 +14,10 @@ extensions = [
 ]
 
 setup(
-    name="airroute",
+    name="myknn",
     version="0.0.4",
     python_requires=">=3.10",
-    packages=["airroute"],
+    packages=["myknn"],
     install_requires=["numpy>=1.20"],
     extras_require={"dev": ["pytest>=7", "Cython", "scikit-learn>=1.0"]},
     ext_modules=cythonize(extensions, language_level=3),

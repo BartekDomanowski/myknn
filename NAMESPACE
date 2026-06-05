@@ -3,4 +3,4 @@
 export(kdtree_build)
 export(kdtree_query)
 export(kdtree_query_radius)
-useDynLib(AirRoute)
+useDynLib(myknn)

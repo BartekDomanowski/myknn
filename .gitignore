@@ -95,8 +95,8 @@ local_benchmark/
 src/symbols.rds
 src/py_kdtree.c
 
-airroute/__pycache__/
-airroute/_tcas*.so
+myknn/__pycache__/
+myknn/_tcas*.so
 build/
 .pytest_cache/
 

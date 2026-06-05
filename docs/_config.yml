@@ -1,6 +1,6 @@
-title: AirRoute
+title: myknn
 description: k-d tree k-NN search (R and Python)
 theme: jekyll-theme-minimal
 github:
-  repository_url: https://github.com/BartekDomanowski/AirRoute
+  repository_url: https://github.com/BartekDomanowski/myknn
   is_project_page: true

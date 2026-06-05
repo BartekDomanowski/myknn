@@ -4,7 +4,7 @@ title: Benchmarks
 
 # Benchmarks
 
-**sklearn** `neighbors.KDTree` vs **airroute** (`kdtree_build`, `kdtree_query`, `kdtree_query_radius`).
+**sklearn** `neighbors.KDTree` vs **myknn** (`kdtree_build`, `kdtree_query`, `kdtree_query_radius`).
 
 - `n_samples` ∈ {25 000, 500 000, 1 000 000}
 - `n_features` ∈ {2, 5}
@@ -16,7 +16,7 @@ Mean time over **100** runs (seconds). `k = 5`, **128** queries per loop (one po
 
 ### Build
 
-| n_samples | n_features | sklearn | airroute |
+| n_samples | n_features | sklearn | myknn |
 | ---: | ---: | ---: | ---: |
 | 25000 | 2 | 0.0026 | 0.0029 |
 | 25000 | 5 | 0.0043 | 0.0034 |
@@ -27,7 +27,7 @@ Mean time over **100** runs (seconds). `k = 5`, **128** queries per loop (one po
 
 ### Query
 
-| n_samples | n_features | sklearn | airroute |
+| n_samples | n_features | sklearn | myknn |
 | ---: | ---: | ---: | ---: |
 | 25000 | 2 | 0.0016 | 0.0001 |
 | 25000 | 5 | 0.0025 | 0.0008 |
@@ -38,7 +38,7 @@ Mean time over **100** runs (seconds). `k = 5`, **128** queries per loop (one po
 
 ### Query radius, r = 0.15 (2D) / r = 0.5 (5D)
 
-| n_samples | n_features | sklearn | airroute |
+| n_samples | n_features | sklearn | myknn |
 | ---: | ---: | ---: | ---: |
 | 25000 | 2 | 0.0025 | 0.0007 |
 | 25000 | 5 | 0.0033 | 0.0009 |
@@ -47,18 +47,18 @@ Mean time over **100** runs (seconds). `k = 5`, **128** queries per loop (one po
 | 1000000 | 2 | 0.0254 | 0.0178 |
 | 1000000 | 5 | 0.0445 | 0.0359 |
 
-### Query — airroute slower
+### Query — myknn slower
 
-| k | n_samples | n_features | sklearn | airroute |
+| k | n_samples | n_features | sklearn | myknn |
 | ---: | ---: | ---: | ---: | ---: |
 | 500 | 1000000 | 5 | 0.0376 | 0.1067 |
 | 500 | 500000 | 5 | 0.0324 | 0.0807 |
 | 200 | 1000000 | 5 | 0.0218 | 0.0498 |
 | 200 | 500000 | 5 | 0.0214 | 0.0446 |
 
-### Query radius — airroute slower
+### Query radius — myknn slower
 
-| n_samples | n_features | r | sklearn | airroute |
+| n_samples | n_features | r | sklearn | myknn |
 | ---: | ---: | ---: | ---: | ---: |
 | 1000000 | 2 | 3.0 | 0.1101 | 2.8381 |
 | 1000000 | 2 | 2.0 | 0.1027 | 2.0329 |

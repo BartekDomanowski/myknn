@@ -2,7 +2,7 @@
 title: Home
 ---
 
-# AirRoute
+# myknn
 
 k-d tree for k-nearest neighbours (R + Python, C core).
 
@@ -13,16 +13,16 @@ Shared **C** implementation (`src/kdtree.c`), **R** bindings (column-major matri
 ## Installation
 
 ```bash
-git clone https://github.com/BartekDomanowski/AirRoute.git
-cd AirRoute
+git clone https://github.com/BartekDomanowski/myknn.git
+cd myknn
 pip install -e ".[dev]"   # Python
 R CMD INSTALL .           # R
 ```
-### AirRoute (Python)
+### myknn (Python)
 
 ```python
 import numpy as np
-from airroute import kdtree_build, kdtree_query, kdtree_query_radius
+from myknn import kdtree_build, kdtree_query, kdtree_query_radius
 
 rng = np.random.RandomState(0)
 X = rng.random_sample((10, 3)).astype(np.float64)
@@ -74,10 +74,10 @@ print(dist)
 [0.29473397 0.         0.19662693]
 ```
 
-### AirRoute (R)
+### myknn (R)
 
 ```r
-library(AirRoute)
+library(myknn)
 X <- matrix(c(
   0.54881350, 0.71518937, 0.60276338,
   0.54488318, 0.42365480, 0.64589411,
@@ -136,8 +136,8 @@ make test
 
 ## Repository
 
-[https://github.com/BartekDomanowski/AirRoute](https://github.com/BartekDomanowski/AirRoute)
+[https://github.com/BartekDomanowski/myknn](https://github.com/BartekDomanowski/myknn)
 
 ## License
 
-AGPL-3 — see [LICENSE](https://github.com/BartekDomanowski/AirRoute/blob/main/LICENSE).
+AGPL-3 — see [LICENSE](https://github.com/BartekDomanowski/myknn/blob/main/LICENSE).

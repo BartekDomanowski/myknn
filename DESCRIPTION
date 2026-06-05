@@ -1,6 +1,6 @@
-Package: AirRoute
+Package: myknn
 Type: Package
-Title: AirRoute - k-d Tree Nearest Neighbours currently
+Title: myknn - k-d Tree Nearest Neighbours currently
 Version: 0.0.4
 Date: 2026-05-25
 Authors@R: c(
@@ -10,10 +10,10 @@ Authors@R: c(
     )
 Author: Bartłomiej Domanowski [aut, cre, cph]
 Maintainer: Bartłomiej Domanowski <01187317@pw.edu.pl>
-BugReports: https://github.com/BartekDomanowski/AirRoute/issues
+BugReports: https://github.com/BartekDomanowski/myknn/issues
 License: AGPL-3 + file LICENSE
 Description: k-d tree for k-nearest neighbour search in Euclidean feature space
-URL: https://github.com/BartekDomanowski/AirRoute
+URL: https://github.com/BartekDomanowski/myknn
 NeedsCompilation: yes
 Depends: R (>= 4.0.0)
 Suggests:

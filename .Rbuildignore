@@ -3,7 +3,7 @@
 ^\.nojekyll
 ^__pycache__
 ^\.pytest_cache
-^airroute
+^myknn
 ^pyproject\.toml
 ^setup\.py
 ^Makefile$

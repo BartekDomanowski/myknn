@@ -7,7 +7,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "airroute"
+name = "myknn"
 version = "0.0.4"
 description = "k-d tree for k-nearest neighbour search with a C core and Cython bindings"
 readme = "README.md"
@@ -28,10 +28,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://bartekdomanowski.github.io/AirRoute/"
-Repository = "https://github.com/BartekDomanowski/AirRoute"
-Issues = "https://github.com/BartekDomanowski/AirRoute/issues"
+Homepage = "https://bartekdomanowski.github.io/myknn/"
+Repository = "https://github.com/BartekDomanowski/myknn"
+Issues = "https://github.com/BartekDomanowski/myknn/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["airroute*"]
+include = ["myknn*"]

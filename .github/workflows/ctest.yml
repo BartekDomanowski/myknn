@@ -1,4 +1,4 @@
-name: AirRoute C tests
+name: myknn C tests
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: AirRoute for R
+name: myknn for R
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
         shell: bash
         run: |
           cd ..
-          R CMD build AirRoute
+          R CMD build myknn
           _R_CHECK_CRAN_INCOMING_REMOTE_=FALSE \
           _R_CHECK_FORCE_SUGGESTS_=0 \
-          R CMD check "$(ls -t AirRoute_*.tar.gz | head -1)" --as-cran --no-manual
+          R CMD check "$(ls -t myknn_*.tar.gz | head -1)" --as-cran --no-manual

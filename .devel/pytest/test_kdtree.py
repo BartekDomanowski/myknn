@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from airroute import kdtree_build, kdtree_query, kdtree_query_radius
+from myknn import kdtree_build, kdtree_query, kdtree_query_radius
 
 
 def expect_knn(tree, point, k, want_idx, want_dist, return_distance=True, tol=1e-9):

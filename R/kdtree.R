@@ -5,7 +5,7 @@
 #' in that feature space.
 #'
 #' @param data numeric matrix (\code{n} rows, \code{d} columns).
-#' @return an external pointer of class \code{AirRoute_kdtree}; freed
+#' @return an external pointer of class \code{myknn_kdtree}; freed
 #'   automatically when garbage-collected.
 #' @export
 #' @examples
@@ -13,8 +13,8 @@
 #' tree <- kdtree_build(data)
 #' kdtree_query(tree, c(0, 0), k = 2)
 kdtree_build <- function(data) {
-    ptr <- .Call("kdtree_build_r", data, PACKAGE = "AirRoute")
-    structure(ptr, class = "AirRoute_kdtree")
+    ptr <- .Call("kdtree_build_r", data, PACKAGE = "myknn")
+    structure(ptr, class = "myknn_kdtree")
 }
 
 #' Query k nearest neighbours
@@ -30,7 +30,7 @@ kdtree_build <- function(data) {
 #' tree <- kdtree_build(data)
 #' kdtree_query(tree, c(0, 0), k = 2)
 kdtree_query <- function(tree, point, k) {
-    .Call("kdtree_query_r", tree, point, as.integer(k), PACKAGE = "AirRoute")
+    .Call("kdtree_query_r", tree, point, as.integer(k), PACKAGE = "myknn")
 }
 
 #' Query neighbours within a radius
@@ -49,5 +49,5 @@ kdtree_query <- function(tree, point, k) {
 #' tree <- kdtree_build(data)
 #' kdtree_query_radius(tree, c(0, 0), r = 1.5)
 kdtree_query_radius <- function(tree, point, r, return_distance = FALSE) {
-    .Call("kdtree_query_radius_r", tree, point, as.double(r), return_distance, PACKAGE = "AirRoute")
+    .Call("kdtree_query_radius_r", tree, point, as.double(r), return_distance, PACKAGE = "myknn")
 }

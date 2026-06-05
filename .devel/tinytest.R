@@ -1,4 +1,4 @@
 set.seed(123)
 library("tinytest")
-library("AirRoute")
+library("myknn")
 print(tinytest::run_test_dir(".devel/tinytest"))
