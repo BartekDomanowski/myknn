@@ -100,3 +100,4 @@ myknn/_tcas*.so
 build/
 .pytest_cache/
 
+win-builder-proof/

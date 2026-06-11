@@ -10,6 +10,8 @@ The core is implemented in C with R and Python bindings. The Python
 Installation
 ------------
 ```bash
+git clone https://github.com/BartekDomanowski/myknn.git
+cd myknn
 # Python
 pip install -e ".[dev]"
 # R
